@@ -1,0 +1,53 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthed() { return request.auth != null; }
+    function isAdmin()  { return request.auth.token.admin == true; }
+    function maxSize(mb){ return request.resource.size <= mb * 1024 * 1024; }
+    function isImage()  { return request.resource.contentType.matches('image/.*'); }
+
+    match /videos/{videoId} {
+      allow read:   if isAuthed();
+      allow create: if isAdmin() && maxSize(5120);
+      allow delete: if isAdmin();
+      allow update: if false;
+    }
+
+    match /thumbnails/{filename} {
+      allow read:  if isAuthed();
+      allow write: if isAdmin() && maxSize(2) && isImage();
+    }
+
+    match /question-images/{imageId} {
+      allow read:  if isAuthed();
+      allow write: if isAdmin() && maxSize(5) && isImage();
+    }
+
+    match /flashcard-images/{imageId} {
+      allow read:  if isAuthed();
+      allow write: if isAdmin() && maxSize(5) && isImage();
+    }
+
+    match /avatars/{uid}/{filename} {
+      allow read:  if isAuthed();
+      allow write: if isAuthed() && request.auth.uid == uid
+        && maxSize(2) && isImage();
+    }
+
+    match /bulk-uploads/{filename} {
+      allow read:  if isAdmin();
+      allow write: if isAdmin() && maxSize(10);
+    }
+
+    match /exports/{uid}/{filename} {
+      allow read:  if isAuthed() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

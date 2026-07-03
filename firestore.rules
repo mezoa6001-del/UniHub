@@ -1,0 +1,202 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Custom Claim helpers (no Firestore reads needed) ──────
+    function isAuthed()       { return request.auth != null; }
+    function role()           { return request.auth.token.get('role', 'student'); }
+    function isAdmin()        { return isAuthed() && (role() == 'admin' || role() == 'superadmin'); }
+    function isSuperAdmin()   { return isAuthed() && role() == 'superadmin'; }
+    function isSubscribed()   { return isAuthed() && request.auth.token.get('subscribed', false) == true; }
+    function canAccessContent(){ return isAdmin() || isSubscribed(); }
+    function isOwner(uid)     { return request.auth.uid == uid; }
+    function onlyFields(a)    { return request.resource.data.keys().hasOnly(a); }
+    function ownUserId()      { return request.resource.data.userId == request.auth.uid; }
+    function incoming()       { return request.resource.data; }
+    function existing()       { return resource.data; }
+
+    // ── users ─────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read: if isAuthed() && (isAdmin() || isOwner(uid));
+      allow create: if isAuthed() && isOwner(uid)
+        && incoming().uid == uid && incoming().role == 'student'
+        && incoming().keys().hasAll(['uid','email','displayName','role',
+             'streak','totalScore','questionsAnswered','correctAnswers']);
+      allow update: if isAuthed() && isOwner(uid)
+        && !incoming().keys().hasAny(['role','uid']);
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── chapters ──────────────────────────────────────────────
+    match /chapters/{id} {
+      allow read:   if isAuthed();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── questions ─────────────────────────────────────────────
+    match /questions/{id} {
+      allow read:   if isAuthed() && canAccessContent();
+      allow update: if isAuthed() && isSubscribed() && onlyFields(['usageCount']);
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── flashcards ────────────────────────────────────────────
+    match /flashcards/{id} {
+      allow read:   if isAuthed() && canAccessContent();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── flashcard_progress ────────────────────────────────────
+    match /flashcard_progress/{id} {
+      allow read:   if isAuthed() && (isAdmin() || existing().userId == request.auth.uid);
+      allow create: if isAuthed() && isSubscribed() && ownUserId()
+        && incoming().keys().hasAll(['userId','flashcardId','interval','repetitions','easeFactor']);
+      allow update: if isAuthed() && isSubscribed()
+        && existing().userId == request.auth.uid && ownUserId()
+        && !incoming().keys().hasAny(['flashcardId']);
+      allow read:   if isAdmin();
+      allow write:  if isAdmin();
+    }
+
+    // ── videos ────────────────────────────────────────────────
+    match /videos/{id} {
+      allow read:   if isAuthed() && canAccessContent()
+        && (existing().isPublished == true || isAdmin());
+      allow update: if isAuthed() && isSubscribed() && onlyFields(['viewCount']);
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── video_progress ────────────────────────────────────────
+    match /video_progress/{id} {
+      allow read:   if isAuthed() && (isAdmin() || existing().userId == request.auth.uid);
+      allow create: if isAuthed() && isSubscribed() && ownUserId()
+        && incoming().keys().hasAll(['userId','videoId','watchedSeconds','totalSeconds','percentage']);
+      allow update: if isAuthed() && isSubscribed()
+        && existing().userId == request.auth.uid && ownUserId()
+        && !incoming().keys().hasAny(['videoId']);
+      allow read:   if isAdmin();
+      allow write:  if isAdmin();
+    }
+
+    // ── subscriptions — CRITICAL: no client writes ────────────
+    match /subscriptions/{uid} {
+      allow read:  if isAuthed() && (isOwner(uid) || isAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    // ── payments ──────────────────────────────────────────────
+    match /payments/{id} {
+      allow read:  if isAuthed() && existing().userId == request.auth.uid
+        && existing().status == 'completed';
+      allow write: if false;
+      allow read:  if isAdmin();
+    }
+
+    // ── payment_logs ──────────────────────────────────────────
+    match /payment_logs/{id} {
+      allow read:  if isAdmin();
+      allow write: if false;
+    }
+
+    // ── attempts ──────────────────────────────────────────────
+    match /attempts/{id} {
+      allow read:   if isAuthed() && (isAdmin() || existing().userId == request.auth.uid);
+      allow create: if isAuthed() && isSubscribed() && ownUserId()
+        && incoming().keys().hasAll(['userId','mode','questionIds','answers',
+             'totalQuestions','correctCount','wrongCount','score'])
+        && incoming().score >= 0 && incoming().score <= 100
+        && incoming().totalQuestions >= 1 && incoming().totalQuestions <= 200;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── bookmarks ─────────────────────────────────────────────
+    match /bookmarks/{id} {
+      allow read:   if isAuthed() && (isAdmin() || existing().userId == request.auth.uid);
+      allow create: if isAuthed() && isSubscribed() && ownUserId()
+        && incoming().keys().hasAll(['userId','questionId']);
+      allow update: if isAuthed() && existing().userId == request.auth.uid
+        && onlyFields(['note','updatedAt']);
+      allow delete: if isAuthed() && existing().userId == request.auth.uid;
+      allow read:   if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── wrong_questions ───────────────────────────────────────
+    match /wrong_questions/{id} {
+      allow read:   if isAuthed() && (isAdmin() || existing().userId == request.auth.uid);
+      allow create: if isAuthed() && isSubscribed() && ownUserId()
+        && incoming().keys().hasAll(['userId','questionId','chapterId','wrongCount','resolved'])
+        && incoming().wrongCount == 1 && incoming().resolved == false;
+      allow update: if isAuthed() && existing().userId == request.auth.uid
+        && onlyFields(['wrongCount','resolved','lastWrongAt','attemptId'])
+        && incoming().userId == existing().userId
+        && incoming().questionId == existing().questionId;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── leaderboard ───────────────────────────────────────────
+    match /leaderboard/{uid} {
+      allow read:   if isAuthed();
+      allow create: if isAuthed() && isOwner(uid)
+        && incoming().keys().hasAll(['displayName','totalScore','questionsAnswered','weeklyScore']);
+      allow update: if isAuthed() && isOwner(uid)
+        && onlyFields(['displayName','totalScore','questionsAnswered','weeklyScore','accuracy','updatedAt']);
+      allow write:  if isAdmin();
+    }
+
+    // ── leaderboard_history ───────────────────────────────────
+    match /leaderboard_history/{week}/entries/{uid} {
+      allow read:  if isAuthed();
+      allow write: if false;
+    }
+
+    // ── notifications ─────────────────────────────────────────
+    match /notifications/{id} {
+      allow read:   if isAuthed() && (isAdmin() || existing().userId == request.auth.uid);
+      allow update: if isAuthed() && existing().userId == request.auth.uid
+        && onlyFields(['read']);
+      allow create: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── ai_explanations ───────────────────────────────────────
+    match /ai_explanations/{id} {
+      allow read:  if isAuthed() && canAccessContent();
+      allow write: if false;
+    }
+
+    // ── question_comments ─────────────────────────────────────
+    match /question_comments/{id} {
+      allow read:  if isAuthed() && canAccessContent() && existing().isDeleted == false;
+      allow write: if false;
+      allow read:  if isAdmin();
+      allow update:if isAdmin();
+      allow delete:if isAdmin();
+    }
+
+    // ── user_analytics / analytics_daily / chapter_analytics ──
+    match /user_analytics/{uid} {
+      allow read:  if isAuthed() && (isOwner(uid) || isAdmin());
+      allow write: if false;
+    }
+    match /analytics_daily/{date}  { allow read: if isAdmin(); allow write: if false; }
+    match /chapter_analytics/{id}  { allow read: if isAdmin(); allow write: if false; }
+    match /admin_audit_logs/{id}   { allow read: if isSuperAdmin(); allow write: if false; }
+    match /pending_payments/{id}   { allow read: if isAdmin(); allow write: if false; }
+
+    // ── catch-all deny ────────────────────────────────────────
+    match /{document=**} { allow read, write: if false; }
+  }
+}

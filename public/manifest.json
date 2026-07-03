@@ -1,0 +1,19 @@
+{
+  "name": "Pharma Core",
+  "short_name": "PharmaCore",
+  "description": "Master Pharmacology. Ace your exams. By Dr. Mazen Ashraf.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F1B2D",
+  "theme_color": "#2FA084",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["education", "medical"],
+  "shortcuts": [
+    { "name": "Start Exam",  "url": "/qbank",      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Flashcards",  "url": "/flashcards", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
