@@ -12,20 +12,29 @@ interface Props {
 // underlying source depending on video.provider (firebase|bunny|vimeo).
 export function VideoPlayer({ video, initialWatchedSeconds = 0, onProgressUpdate }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const syncRef  = useRef<ReturnType<typeof setInterval>>();
+  const syncRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [pct, setPct] = useState(0);
 
-  useEffect(() => {
-    syncRef.current = setInterval(() => {
-      const v = videoRef.current;
-      if (!v || !v.duration) return;
-      const watched = Math.floor(v.currentTime);
-      const total   = Math.floor(v.duration);
-      setPct(Math.round((watched / total) * 100));
-      onProgressUpdate?.(watched, total);
-    }, 10000);
-    return () => clearInterval(syncRef.current);
-  }, [onProgressUpdate]);
+useEffect(() => {
+  syncRef.current = setInterval(() => {
+    const v = videoRef.current;
+
+    if (!v || !v.duration) return;
+
+    const watched = Math.floor(v.currentTime);
+    const total = Math.floor(v.duration);
+
+    setPct(Math.round((watched / total) * 100));
+
+    onProgressUpdate?.(watched, total);
+  }, 10000);
+
+  return () => {
+    if (syncRef.current) {
+      clearInterval(syncRef.current);
+    }
+  };
+}, [onProgressUpdate]);
 
   if (video.provider === "vimeo" && video.externalUrl) {
     return (

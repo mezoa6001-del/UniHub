@@ -6,4 +6,4 @@ export { default as AdminPageHeader } from "./AdminPageHeader";
 export { default as AdminSearch } from "./AdminSearch";
 export { default as AdminTable } from "./AdminTable";
 export { default as AdminToolbar } from "./AdminToolbar";
-export { default as BulkUpload } from "./BulkUpload";
+export { BulkUpload } from "./BulkUpload";

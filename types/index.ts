@@ -129,6 +129,7 @@ export interface VideoDoc {
   duration:      number;
   thumbnailUrl:  string;
   storageRef?:   string;
+  videoUrl?:   string;
   externalUrl?:  string;
   provider:      VideoProvider;
   order:         number;
