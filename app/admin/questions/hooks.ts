@@ -81,10 +81,13 @@ export function useQuestionManager() {
     );
 
     const payload = {
-      ...form,
-      chapterName: chapter?.name ?? form.chapterId,
-      type: "single" as const,
-    };
+  ...form,
+  chapterName: chapter?.name ?? form.chapterId,
+  type: "single" as const,
+
+  ...(form.source ? { source: form.source } : {}),
+  ...(form.year !== undefined ? { year: form.year } : {}),
+};
 
     try {
       if (mode === "add") {
@@ -121,14 +124,15 @@ export function useQuestionManager() {
       closeModal();
 
       await load();
-    } catch {
-      setToast({
-        msg: "Failed to save question",
-        type: "error",
-      });
-    }
-  }
+    } catch (error) {
+  console.error("Save question failed:", error);
 
+  setToast({
+    msg: "Failed to save question",
+    type: "error",
+  });
+}
+} //
   async function deleteQuestion(question: QuestionDoc) {
     if (
       !confirm(

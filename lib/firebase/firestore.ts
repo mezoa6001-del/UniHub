@@ -82,13 +82,38 @@ export async function getQuestionsPaginated(
 }
 
 export async function createQuestion(data: Partial<QuestionDoc>) {
-  const ref = await addDoc(col("questions"), { ...data, isActive: true, usageCount: 0, correctRate: 0, createdAt: ts(), updatedAt: ts() });
-  if (data.chapterId) await updateDoc(dref("chapters", data.chapterId), { questionCount: inc(1) });
+  const cleaned = Object.fromEntries(
+    Object.entries(data).filter(([, value]) => value !== undefined)
+  );
+
+  const ref = await addDoc(col("questions"), {
+    ...cleaned,
+    isActive: true,
+    usageCount: 0,
+    correctRate: 0,
+    createdAt: ts(),
+    updatedAt: ts(),
+  });
+
+  if (data.chapterId) {
+    await updateDoc(
+      dref("chapters", data.chapterId),
+      { questionCount: inc(1) }
+    );
+  }
+
   return ref;
 }
 
 export async function updateQuestion(id: string, data: Partial<QuestionDoc>) {
-  await updateDoc(dref("questions", id), { ...data, updatedAt: ts() });
+  const cleaned = Object.fromEntries(
+    Object.entries(data).filter(([, value]) => value !== undefined)
+  );
+
+  await updateDoc(dref("questions", id), {
+    ...cleaned,
+    updatedAt: ts(),
+  });
 }
 
 export async function softDeleteQuestion(id: string, chapterId?: string) {
