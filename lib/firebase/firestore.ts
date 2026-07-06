@@ -168,12 +168,33 @@ export async function getUserFlashcardProgress(uid: string): Promise<Record<stri
 }
 
 // ── Videos ─────────────────────────────────────────────────
-export async function getVideos(chapterId?: string): Promise<VideoDoc[]> {
-  const q = chapterId
-    ? query(col("videos"), where("chapterId", "==", chapterId), where("isPublished", "==", true))
-    : query(col("videos"), where("isPublished", "==", true), orderBy("order", "asc"));
+export async function getVideos(
+  chapterId?: string,
+  includeDrafts = false
+): Promise<VideoDoc[]> {
+  const q =
+    chapterId
+      ? query(
+          col("videos"),
+          where("chapterId", "==", chapterId),
+          ...(includeDrafts ? [] : [where("isPublished", "==", true)]),
+          orderBy("order", "asc")
+        )
+      : query(
+          col("videos"),
+          ...(includeDrafts ? [] : [where("isPublished", "==", true)]),
+          orderBy("order", "asc")
+        );
+
   const s = await getDocs(q);
-  return s.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as VideoDoc));
+
+  return s.docs.map(
+    (d) =>
+      ({
+        id: d.id,
+        ...d.data(),
+      }) as VideoDoc
+  );
 }
 
 export async function createVideo(data: Partial<VideoDoc>) {
@@ -182,6 +203,10 @@ export async function createVideo(data: Partial<VideoDoc>) {
 
 export async function updateVideo(id: string, data: Partial<VideoDoc>) {
   await updateDoc(dref("videos", id), { ...data, updatedAt: ts() });
+}
+
+export async function deleteVideo(id: string) {
+  await deleteDoc(dref("videos", id));
 }
 
 // ── Video Progress ─────────────────────────────────────────

@@ -123,6 +123,7 @@ export interface FlashcardProgressDoc {
 export interface VideoDoc {
   id:            string;
   chapterId:     string;
+  chapterName: string;
   title:         string;
   description:   string;
   instructorName: string;
@@ -132,6 +133,7 @@ export interface VideoDoc {
   videoUrl?:   string;
   externalUrl?:  string;
   provider:      VideoProvider;
+  bunnyVideoId?: string;
   order:         number;
   isPublished:   boolean;
   viewCount:     number;
