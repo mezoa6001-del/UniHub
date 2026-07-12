@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getChapters } from "@/lib/firebase/firestore";
-import { StatCard, Spinner } from "@/components/ui";
+import { StatsCard, Spinner } from "@/components/ui";
 import { useAuth } from "@/hooks/useAuth";
 
 import { useState } from "react";
@@ -79,7 +79,7 @@ export default function AdminOverviewPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {cards.map((c) => (
           <Link key={c.href} href={c.href}>
-            <StatCard
+            <StatsCard
               icon={c.icon}
               label={c.label}
               value={c.value}

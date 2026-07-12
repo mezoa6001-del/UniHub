@@ -8,23 +8,40 @@ import { cn } from "@/lib/utils/cn";
 
 const NAV_ITEMS = [
   { href: "/",                icon: "🏠", label: "Dashboard"       },
+
+  { href: "/courses",         icon: "📚", label: "Courses" },
+
   { href: "/qbank",           icon: "📝", label: "Question Bank"   },
+
   { href: "/flashcards",      icon: "⚡", label: "Flashcards"      },
+
   { href: "/videos",          icon: "🎥", label: "Videos"          },
+
   { href: "/analytics",       icon: "📊", label: "Analytics"       },
+
   { href: "/leaderboard",     icon: "🏆", label: "Leaderboard"     },
+
   { href: "/bookmarks",       icon: "🔖", label: "Bookmarks"       },
+
   { href: "/wrong-questions", icon: "❌", label: "Wrong Questions" },
+
   { href: "/subscription",    icon: "💳", label: "Subscription"    },
 ];
 
 const ADMIN_ITEMS = [
-  { href: "/admin",            icon: "🛡️", label: "Admin Overview" },
-  { href: "/admin/questions",  icon: "📝", label: "Questions"      },
-  { href: "/admin/chapters",   icon: "📚", label: "Chapters"       },
-  { href: "/admin/flashcards", icon: "⚡", label: "Flashcards"     },
-  { href: "/admin/videos",     icon: "🎥", label: "Videos"         },
-  { href: "/admin/users",      icon: "👥", label: "Users"          },
+  { href: "/admin",             icon: "🛡️", label: "Admin Overview" },
+
+  { href: "/admin/courses",     icon: "📚", label: "Courses" },
+
+  { href: "/admin/chapters",    icon: "📖", label: "Chapters" },
+
+  { href: "/admin/questions",   icon: "📝", label: "Questions" },
+
+  { href: "/admin/flashcards",  icon: "⚡", label: "Flashcards" },
+
+  { href: "/admin/videos",      icon: "🎥", label: "Videos" },
+
+  { href: "/admin/users",       icon: "👥", label: "Users" },
 ];
 
 export function Sidebar() {
