@@ -2,8 +2,8 @@
 
 import { EmptyState, Spinner } from "@/components/ui";
 
-import type { Chapter } from "../../types";
 import { ChapterCard } from "../cards/ChapterCard";
+import type { Chapter } from "../../types";
 
 interface ChapterListProps {
   chapters: Chapter[];
@@ -23,16 +23,18 @@ export function ChapterList({
   if (loading) {
     return (
       <div className="flex justify-center py-16">
-        <Spinner size={40} />
+        <Spinner />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6 text-red-400">
-        {error}
-      </div>
+      <EmptyState
+        icon="⚠️"
+        title="Failed to load chapters"
+        desc={error}
+      />
     );
   }
 
@@ -41,7 +43,7 @@ export function ChapterList({
       <EmptyState
         icon="📚"
         title="No chapters yet"
-        desc="Create your first chapter to start organizing this course."
+        desc="Create your first chapter to start building the course."
       />
     );
   }

@@ -3,17 +3,20 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 
-import { FormActions } from "@/components/ui/forms/FormActions";
-import { FormField } from "@/components/ui/forms/FormField";
-import { Input } from "@/components/ui/forms/Input";
-import { Select } from "@/components/ui/forms/Select";
-import { Textarea } from "@/components/ui/forms/Textarea";
+import {
+  FormActions,
+  FormField,
+  Input,
+  Select,
+  Textarea,
+} from "@/components/ui";
 
 import type { CreateChapterInput } from "../../validators";
 
 interface ChapterFormProps {
   loading?: boolean;
   initialValues?: Partial<CreateChapterInput>;
+  submitLabel?: string;
   onSubmit: (
     values: CreateChapterInput
   ) => Promise<void> | void;
@@ -23,6 +26,7 @@ interface ChapterFormProps {
 export function ChapterForm({
   loading = false,
   initialValues,
+  submitLabel = "Save Chapter",
   onSubmit,
   onCancel,
 }: ChapterFormProps) {
@@ -45,6 +49,14 @@ export function ChapterForm({
   const [status, setStatus] = useState<"draft" | "published">(
     initialValues?.status ?? "draft"
   );
+
+  useEffect(() => {
+    setTitle(initialValues?.title ?? "");
+    setSlug(initialValues?.slug ?? "");
+    setDescription(initialValues?.description ?? "");
+    setOrder(initialValues?.order ?? 1);
+    setStatus(initialValues?.status ?? "draft");
+  }, [initialValues]);
 
   useEffect(() => {
     if (slug.trim() !== "") return;
@@ -157,7 +169,7 @@ export function ChapterForm({
 
       <FormActions
         loading={loading}
-        submitLabel="Save Chapter"
+        submitLabel={submitLabel}
         onCancel={onCancel}
       />
     </form>
