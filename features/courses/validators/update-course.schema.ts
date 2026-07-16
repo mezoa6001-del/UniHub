@@ -34,3 +34,5 @@ export const updateCourseSchema = z.object({
 
   status: courseStatusSchema.optional(),
 });
+export type UpdateCourseInput =
+  z.input<typeof updateCourseSchema>;

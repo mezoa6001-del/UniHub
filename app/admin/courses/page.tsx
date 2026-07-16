@@ -1,21 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-
 import { PrimaryBtn, Spinner } from "@/components/ui";
-
+import { EditCourseDialog } from "@/features/courses/components/dialogs/EditCourseDialog";
 import { CourseFilters } from "@/features/courses/components/filters/CourseFilters";
 import { CoursesTable } from "@/features/courses/components/tables/CoursesTable";
 import { useCourseFilters } from "@/features/courses/hooks/use-course-filters";
 import { useCourses } from "@/features/courses/hooks/use-courses";
-
+import type { Course } from "@/features/courses/types";
+import { DeleteCourseDialog } from "@/features/courses/components/dialogs/DeleteCourseDialog";
 export default function CoursesPage() {
   const {
-    courses,
-    loading,
-    error,
-  } = useCourses();
-
+  courses,
+  loading,
+  error,
+  reload,
+} = useCourses();
   const {
     search,
     status,
@@ -23,6 +24,15 @@ export default function CoursesPage() {
     setStatus,
     filteredCourses,
   } = useCourseFilters(courses);
+  const [editingCourse, setEditingCourse] =
+  useState<Course | null>(null);
+
+const [deletingCourse, setDeletingCourse] =
+  useState<Course | null>(null);
+  console.log({
+  editingCourse,
+  deletingCourse,
+});
 
   return (
     <div className="space-y-6">
@@ -64,8 +74,31 @@ export default function CoursesPage() {
       )}
 
       {!loading && !error && (
-        <CoursesTable courses={filteredCourses} />
-      )}
+  <CoursesTable
+    courses={filteredCourses}
+    onEdit={setEditingCourse}
+    onDelete={setDeletingCourse}
+  />
+)}
+
+<EditCourseDialog
+  open={editingCourse !== null}
+  course={editingCourse}
+  onClose={() => setEditingCourse(null)}
+  onUpdated={async () => {
+    await reload();
+    setEditingCourse(null);
+  }}
+/>     
+<DeleteCourseDialog
+  open={deletingCourse !== null}
+  course={deletingCourse}
+  onClose={() => setDeletingCourse(null)}
+  onDeleted={async () => {
+    await reload();
+    setDeletingCourse(null);
+  }}
+/> 
     </div>
   );
 }

@@ -8,6 +8,8 @@ import { PrimaryBtn } from "@/components/ui";
 import { useAuth } from "@/features/shared/hooks/use-auth";
 import type { CurrentUser } from "@/features/shared/types/auth.types";
 
+import { CourseFormFields } from "./CourseFormFields";
+
 import { useCreateCourse } from "../../hooks/use-create-course";
 import { generateSlug } from "../../utils/generate-slug";
 import {
@@ -83,63 +85,10 @@ function CourseFormContent({
       onSubmit={handleSubmit(submit)}
       className="space-y-8"
     >
-      <div>
-        <label className="mb-2 block text-sm font-medium">
-          Course Title
-        </label>
-
-        <input
-          {...register("title")}
-          placeholder="Pharmacology Foundation"
-          className="h-11 w-full rounded-lg border border-border bg-background px-3 outline-none focus:ring-2 focus:ring-primary"
-        />
-
-        {errors.title && (
-          <p className="mt-2 text-sm text-red-500">
-            {errors.title.message}
-          </p>
-        )}
-      </div>
-
-      <div>
-        <label className="mb-2 block text-sm font-medium">
-          Slug
-        </label>
-
-        <input
-          {...register("slug")}
-          className="h-11 w-full rounded-lg border border-border bg-background px-3 outline-none focus:ring-2 focus:ring-primary"
-        />
-
-        <p className="mt-2 text-xs text-muted-foreground">
-          Generated automatically from the course title.
-        </p>
-
-        {errors.slug && (
-          <p className="mt-2 text-sm text-red-500">
-            {errors.slug.message}
-          </p>
-        )}
-      </div>
-
-      <div>
-        <label className="mb-2 block text-sm font-medium">
-          Description
-        </label>
-
-        <textarea
-          {...register("description")}
-          rows={7}
-          placeholder="Write a short description..."
-          className="w-full rounded-lg border border-border bg-background px-3 py-3 outline-none focus:ring-2 focus:ring-primary"
-        />
-
-        {errors.description && (
-          <p className="mt-2 text-sm text-red-500">
-            {errors.description.message}
-          </p>
-        )}
-      </div>
+      <CourseFormFields
+        register={register}
+        errors={errors}
+      />
 
       {error && (
         <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-600">
@@ -150,9 +99,9 @@ function CourseFormContent({
       <div className="flex justify-end">
         <PrimaryBtn
           type="submit"
-          disabled={isLoading}
+          loading={isLoading}
         >
-          {isLoading ? "Creating..." : "Create Course"}
+          Create Course
         </PrimaryBtn>
       </div>
     </form>

@@ -6,10 +6,11 @@ import type { CurrentUser } from "@/features/shared/types/auth.types";
 
 import { createCourse } from "../services";
 import type { CreateCourseInput } from "../validators/create-course.schema";
-
+import { useRouter } from "next/navigation";
 export function useCreateCourse(currentUser: CurrentUser) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   async function submit(data: CreateCourseInput) {
     setIsLoading(true);
@@ -26,7 +27,8 @@ export function useCreateCourse(currentUser: CurrentUser) {
       console.log("Firestore Result:", course);
 
       console.groupEnd();
-
+router.push("/admin/courses");
+router.refresh();
       return course;
     } catch (err) {
       console.groupEnd();

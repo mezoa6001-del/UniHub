@@ -15,6 +15,8 @@ import { CoursePageHeader } from "./CoursePageHeader";
 import { CourseTabs } from "./CourseTabs";
 
 import { EditChapterDialog } from "@/features/chapters/components/dialogs";
+import { ConfirmDialog } from "@/components/ui";
+import { deleteChapter } from "@/features/chapters/services";
 
 import type { Chapter } from "@/features/chapters/types";
 interface CourseDetailsPageProps {
@@ -47,6 +49,11 @@ export function CourseDetailsPage({
     useState(false);
     const [editingChapter, setEditingChapter] =
   useState<Chapter | null>(null);
+  const [deletingChapter, setDeletingChapter] =
+  useState<Chapter | null>(null);
+
+const [deleteLoading, setDeleteLoading] =
+  useState(false);
 
   if (loading) {
     return (
@@ -180,6 +187,7 @@ export function CourseDetailsPage({
   loading={chaptersLoading}
   error={chaptersError}
   onEdit={setEditingChapter}
+  onDelete={setDeletingChapter}
 />
           </div>
         )}
@@ -226,13 +234,44 @@ export function CourseDetailsPage({
 }}
       />
       <EditChapterDialog
-  open={editingChapter !== null}
-  chapter={editingChapter}
-  onClose={() => setEditingChapter(null)}
-  onUpdated={async () => {
+        open={editingChapter !== null}
+        chapter={editingChapter}
+        onClose={() => setEditingChapter(null)}
+        onUpdated={async () => {
+          await reload();
+          setEditingChapter(null);
+        }}
+      />
+      <ConfirmDialog
+  open={deletingChapter !== null}
+  title="Delete Chapter"
+  description={
+    deletingChapter
+      ? `Are you sure you want to delete "${deletingChapter.title}"?`
+      : ""
+  }
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  danger
+  loading={deleteLoading}
+  onCancel={() => setDeletingChapter(null)}
+  onConfirm={async () => {
+  if (!deletingChapter) return;
+
+  try {
+    setDeleteLoading(true);
+
+    await deleteChapter(deletingChapter.id);
+
+    setDeletingChapter(null);
+
     await reload();
-    setEditingChapter(null);
-  }}
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setDeleteLoading(false);
+  }
+}}
 />
     </>
   );

@@ -15,10 +15,14 @@ import type { Course } from "../../types";
 
 interface CourseCardProps {
   course: Course;
+  onEdit?: (course: Course) => void;
+  onDelete?: (course: Course) => void;
 }
 
 export function CourseCard({
   course,
+  onEdit,
+  onDelete,
 }: CourseCardProps) {
   const published = course.status === "published";
 
@@ -91,9 +95,7 @@ export function CourseCard({
           type="button"
           title="Edit Course"
           className="rounded-lg p-2 text-slate-400 transition hover:bg-primary-500/10 hover:text-primary-400"
-          onClick={() => {
-            console.log("Edit", course.id);
-          }}
+          onClick={() => onEdit?.(course)}
         >
           <Pencil size={18} />
         </button>
@@ -102,9 +104,7 @@ export function CourseCard({
           type="button"
           title="Delete Course"
           className="rounded-lg p-2 text-red-400 transition hover:bg-red-500/10"
-          onClick={() => {
-            console.log("Delete", course.id);
-          }}
+          onClick={() => onDelete?.(course)}
         >
           <Trash2 size={18} />
         </button>

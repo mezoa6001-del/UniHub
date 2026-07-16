@@ -9,10 +9,14 @@ import type { Course } from "../../types";
 
 interface CoursesTableProps {
   courses: Course[];
+  onEdit?: (course: Course) => void;
+  onDelete?: (course: Course) => void;
 }
 
 export function CoursesTable({
   courses,
+  onEdit,
+  onDelete,
 }: CoursesTableProps) {
   if (courses.length === 0) {
     return (
@@ -45,9 +49,11 @@ export function CoursesTable({
     <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
       {courses.map((course) => (
         <CourseCard
-          key={course.id}
-          course={course}
-        />
+  key={course.id}
+  course={course}
+  onEdit={onEdit}
+  onDelete={onDelete}
+/>
       ))}
     </div>
   );

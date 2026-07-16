@@ -75,14 +75,22 @@ export function ChapterForm({
   ) {
     e.preventDefault();
 
-    await onSubmit({
-      courseId: initialValues?.courseId ?? "",
-      title,
-      slug,
-      description,
-      order,
-      status,
-    });
+    const finalSlug =
+  slug.trim() ||
+  title
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
+
+await onSubmit({
+  courseId: initialValues?.courseId ?? "",
+  title,
+  slug: finalSlug,
+  description,
+  order,
+  status,
+});
   }
 
   return (
