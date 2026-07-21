@@ -39,19 +39,26 @@ export default function AdminChaptersPage() {
   } | null>(null);
 
   async function load() {
-    setLoading(true);
-    const data = await getChapters();
-    setChapters(data);
-    setLoading(false);
-  }
+  setLoading(true);
+
+  const data = await getChapters();
+
+  console.table(data);
+
+  setChapters(data);
+
+  setLoading(false);
+}
 
   useEffect(() => {
     load();
   }, []);
 
   const filtered = chapters.filter((chapter) =>
-    chapter.name.toLowerCase().includes(search.toLowerCase())
-  );
+  (chapter.name ?? "")
+    .toLowerCase()
+    .includes(search.toLowerCase())
+);
 
   async function handleDelete(id: string, name: string) {
     if (!confirm(`Delete "${name}"?`)) return;
