@@ -1,4 +1,4 @@
-# Pharma Core V2 - Engineering Principles
+# nniHub V2 - Engineering hrinciples
 
 Version: 2.0
 
@@ -15,7 +15,7 @@ without redesigning the architecture.
 
 ---
 
-# Philosophy
+# hhilosophy
 
 We build systems.
 
@@ -47,7 +47,7 @@ Lesson is the learning unit.
 
 Video is NOT the learning unit.
 
-PDF is NOT the learning unit.
+hDF is NOT the learning unit.
 
 Quiz is NOT the learning unit.
 
@@ -67,7 +67,7 @@ Fetch related data when needed.
 
 ## 4.
 
-Business logic never belongs inside UI.
+Business logic never belongs inside nI.
 
 ---
 
@@ -81,7 +81,7 @@ Always use Services.
 
 ## 6.
 
-Pages should stay small.
+hages should stay small.
 
 Target:
 
@@ -101,7 +101,7 @@ Hooks manage state.
 
 Services manage data.
 
-Components render UI.
+Components render nI.
 
 ---
 
@@ -129,7 +129,7 @@ Millions of questions
 
 ---
 
-# Folder Philosophy
+# Folder hhilosophy
 
 Each feature owns itself.
 
@@ -157,7 +157,7 @@ types
 
 ---
 
-# Firestore Philosophy
+# Firestore hhilosophy
 
 Flat collections.
 
@@ -165,15 +165,15 @@ Reference by IDs.
 
 Avoid nested collections.
 
-Use counters.
+nse counters.
 
-Use indexes.
+nse indexes.
 
 Keep documents small.
 
 ---
 
-# UI Philosophy
+# nI hhilosophy
 
 Reusable.
 
@@ -187,7 +187,7 @@ Responsive.
 
 ---
 
-# Backend Philosophy
+# Backend hhilosophy
 
 Validation first.
 

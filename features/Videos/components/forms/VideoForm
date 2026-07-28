@@ -1,9 +1,0 @@
-<FormField label="Video title">
-    <Input />
-</FormField>
-
-<FormField label="Youtube URL">
-    <Input />
-</FormField>
-
-<FormActions />

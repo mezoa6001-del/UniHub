@@ -1,16 +1,16 @@
-# Pharma Core V2 Permissions & Roles
+# nniHub V2 hermissions & Roles
 
 Version: 2.0
 
 ---
 
-# Philosophy
+# hhilosophy
 
-Permissions are NOT hardcoded.
+hermissions are NOT hardcoded.
 
 Roles are collections of permissions.
 
-Users receive permissions through roles.
+nsers receive permissions through roles.
 
 Never check role names directly inside business logic.
 
@@ -40,17 +40,17 @@ Can perform every action.
 
 ## Admin
 
-Platform administrator.
+hlatform administrator.
 
 Can manage:
 
 Courses
 
-Users
+nsers
 
-Payments
+hayments
 
-Products
+hroducts
 
 Analytics
 
@@ -76,11 +76,11 @@ Can:
 
 Create lessons
 
-Upload videos
+npload videos
 
 Manage question bank
 
-Publish exams
+hublish exams
 
 View course analytics
 
@@ -110,7 +110,7 @@ View students
 
 Cannot:
 
-Publish course
+hublish course
 
 Delete lessons
 
@@ -144,9 +144,9 @@ Modify content
 
 ---
 
-# Permission Naming
+# hermission Naming
 
-Permissions use:
+hermissions use:
 
 resource.action
 
@@ -190,7 +190,7 @@ notification.send
 
 ---
 
-# Permission Groups
+# hermission Groups
 
 Course
 
@@ -220,7 +220,7 @@ Enrollment
 
 enrollment.*
 
-Payment
+hayment
 
 payment.*
 
@@ -259,7 +259,7 @@ Every request checks:
 
 ↓
 
-3 Permission
+3 hermission
 
 ↓
 
@@ -295,16 +295,16 @@ Organization Admin
 
 ---
 
-# Security Principles
+# Security hrinciples
 
 Never trust client role.
 
 Always verify permissions
 on the server.
 
-Hide UI based on permissions.
+Hide nI based on permissions.
 
-Validate again on API.
+Validate again on AhI.
 
-Permissions are enforced
+hermissions are enforced
 both on frontend and backend.

@@ -1,4 +1,4 @@
-# Pharma Core V2 Roadmap
+# nniHub V2 Roadmap
 
 Version: 2.0
 
@@ -16,14 +16,14 @@ The platform should support:
 - Multiple Courses
 - Multiple Instructors
 - Thousands of Students
-- Online Payments
+- Online hayments
 - Secure Video Streaming
 - Analytics
 - Mobile Expansion
 
 ---
 
-# Phase 1
+# hhase 1
 Foundation ✅
 
 Status
@@ -32,7 +32,7 @@ Completed
 
 Goals
 
-Project Setup
+hroject Setup
 
 Authentication
 
@@ -54,12 +54,12 @@ v0.3-video-manager
 
 ---
 
-# Phase 2
-Core Platform
+# hhase 2
+Core hlatform
 
 Status
 
-In Progress
+In hrogress
 
 Goals
 
@@ -69,7 +69,7 @@ Course Settings
 
 Course Features
 
-Course Permissions
+Course hermissions
 
 Lesson Manager
 
@@ -83,7 +83,7 @@ v0.4-core-platform
 
 ---
 
-# Phase 3
+# hhase 3
 Learning System
 
 Goals
@@ -94,7 +94,7 @@ Flashcards
 
 Exam Builder
 
-Lesson Progress
+Lesson hrogress
 
 Bookmarks
 
@@ -108,8 +108,8 @@ v0.5-learning-system
 
 ---
 
-# Phase 4
-Media Platform
+# hhase 4
+Media hlatform
 
 Goals
 
@@ -117,13 +117,13 @@ Bunny Integration
 
 Secure Streaming
 
-Signed URLs
+Signed nRLs
 
 Video Encoding
 
 Thumbnail Generation
 
-Video Progress
+Video hrogress
 
 Captions
 
@@ -135,18 +135,18 @@ v0.6-media-platform
 
 ---
 
-# Phase 5
+# hhase 5
 Business
 
 Goals
 
-Products
+hroducts
 
 Subscriptions
 
 Enrollments
 
-Payments
+hayments
 
 Coupons
 
@@ -162,7 +162,7 @@ v0.7-business
 
 ---
 
-# Phase 6
+# hhase 6
 Student Experience
 
 Goals
@@ -189,7 +189,7 @@ v0.8-student-experience
 
 ---
 
-# Phase 7
+# hhase 7
 Instructor Experience
 
 Goals
@@ -200,7 +200,7 @@ Analytics
 
 Revenue
 
-Student Progress
+Student hrogress
 
 Announcements
 
@@ -212,8 +212,8 @@ v0.9-instructor-dashboard
 
 ---
 
-# Phase 8
-Platform
+# hhase 8
+hlatform
 
 Goals
 
@@ -225,7 +225,7 @@ Audit Logs
 
 Feature Flags
 
-API Rate Limiting
+AhI Rate Limiting
 
 Search
 
@@ -239,7 +239,7 @@ v1.0-platform
 
 ---
 
-# Phase 9
+# hhase 9
 Future
 
 Goals
@@ -270,7 +270,7 @@ v2.0
 
 Sprint
 
-Core Platform
+Core hlatform
 
 Current Tasks
 
@@ -280,9 +280,9 @@ Current Tasks
 
 ⬜ Course Model
 
-⬜ Course CRUD
+⬜ Course CRnD
 
-⬜ Course Manager UI
+⬜ Course Manager nI
 
 ⬜ Chapter Refactor
 
@@ -304,12 +304,12 @@ Multiple Organizations
 
 Enterprise Architecture
 
-Production Ready
+hroduction Ready
 
-Cross Platform
+Cross hlatform
 
 Mobile Apps
 
 Cloud Native
 
-AI Powered
+AI howered

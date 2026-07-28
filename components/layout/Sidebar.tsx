@@ -56,9 +56,9 @@ export function Sidebar() {
       {/* Logo */}
       <div className="px-5 py-6 border-b border-white/6">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-secondary flex items-center justify-center text-lg">💊</div>
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-secondary flex items-center justify-center text-lg font-black text-white shadow-lg shadow-primary-500/20">U</div>
           <div>
-            <p className="text-[17px] font-extrabold text-white leading-none">Pharma Core</p>
+            <p className="text-[17px] font-extrabold text-white leading-none">UniHub</p>
             <p className="text-[9px] text-secondary font-bold tracking-[2px] uppercase mt-0.5">Dr. Mazen Ashraf</p>
           </div>
         </div>

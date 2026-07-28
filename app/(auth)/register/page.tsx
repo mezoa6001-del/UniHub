@@ -35,9 +35,9 @@ export default function RegisterPage() {
     <div className="w-full max-w-md">
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary flex items-center justify-center text-2xl">💊</div>
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-primary-500/20">U</div>
           <div className="text-left">
-            <h1 className="text-2xl font-extrabold text-white">Pharma Core</h1>
+            <h1 className="text-2xl font-extrabold text-white">UniHub</h1>
             <p className="text-xs text-secondary font-bold tracking-widest uppercase">by Dr. Mazen Ashraf</p>
           </div>
         </div>

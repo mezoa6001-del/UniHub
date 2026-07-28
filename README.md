@@ -1,6 +1,6 @@
-# 💊 Pharma Core
+# 💊 UniHub
 
-**Master Pharmacology. Ace your exams.**
+**Learn. Practice. Excel.**
 
 A complete pharmaceutical education platform — question bank, spaced-repetition flashcards, video lectures, analytics, leaderboards, and subscriptions — built on Next.js 15 and Firebase.
 
@@ -39,7 +39,7 @@ Created by **Dr. Mazen Ashraf**.
 ## 📁 Project Structure
 
 ```
-pharmacore/
+unihub/
 ├── app/                    # Next.js App Router pages
 │   ├── (auth)/             # Login, register, password reset
 │   ├── (dashboard)/        # Student-facing pages
@@ -65,8 +65,8 @@ pharmacore/
 ### 1. Clone and install
 
 ```bash
-git clone <your-repo-url> pharmacore
-cd pharmacore
+git clone <your-repo-url> unihub
+cd unihub
 npm install
 ```
 

@@ -1,7 +1,7 @@
 {
-  "name": "Pharma Core",
-  "short_name": "PharmaCore",
-  "description": "Master Pharmacology. Ace your exams. By Dr. Mazen Ashraf.",
+  "name": "UniHub",
+  "short_name": "UniHub",
+  "description": "Learn. Practice. Excel. By Dr. Mazen Ashraf.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0F1B2D",

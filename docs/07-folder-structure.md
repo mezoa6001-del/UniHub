@@ -1,4 +1,4 @@
-# Pharma Core V2 Folder Structure
+# nniHub V2 Folder Structure
 
 Version: 2.0
 
@@ -14,7 +14,7 @@ Version: 2.0
 
 ---
 
-# Project Structure
+# hroject Structure
 
 app/
 components/
@@ -106,7 +106,7 @@ validators/
 
 # components/
 
-Reusable UI.
+Reusable nI.
 
 Examples
 
@@ -166,7 +166,7 @@ Authentication
 
 Storage
 
-Utilities
+ntilities
 
 Configuration
 
@@ -186,7 +186,7 @@ Architecture
 
 Schema
 
-Permissions
+hermissions
 
 Roadmap
 
@@ -196,18 +196,18 @@ Decisions
 
 # Rules
 
-Pages render.
+hages render.
 
 Hooks manage state.
 
 Services manage data.
 
-Components render UI.
+Components render nI.
 
 Never duplicate code.
 
 Never place Firestore logic inside components.
 
-Prefer composition over inheritance.
+hrefer composition over inheritance.
 
 One responsibility per file.

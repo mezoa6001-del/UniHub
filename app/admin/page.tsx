@@ -15,7 +15,7 @@ async function getAdminQuestionsCount() {
   return qs.length;
 }
 
-export default function AdminOverviewPage() {
+export default function AdminOverviewhage() {
   const router = useRouter();
   const { loading, isAdmin } = useAuth();
 
@@ -24,7 +24,7 @@ export default function AdminOverviewPage() {
     questions: 0,
   });
 
-  const [pageLoading, setPageLoading] = useState(true);
+  const [pageLoading, sethageLoading] = useState(true);
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -45,7 +45,7 @@ export default function AdminOverviewPage() {
           questions: qCount,
         })
       )
-      .finally(() => setPageLoading(false));
+      .finally(() => sethageLoading(false));
   }, [isAdmin]);
 
   if (loading || pageLoading) {
@@ -61,7 +61,7 @@ export default function AdminOverviewPage() {
     { href: "/admin/chapters", icon: "📚", label: "Chapters", value: stats.chapters, color: "#3B82F6" },
     { href: "/admin/flashcards", icon: "⚡", label: "Flashcards", value: "Manage", color: "#8B5CF6" },
     { href: "/admin/videos", icon: "🎥", label: "Videos", value: "Manage", color: "#EF4444" },
-    { href: "/admin/users", icon: "👥", label: "Users", value: "Manage", color: "#F59E0B" },
+    { href: "/admin/users", icon: "👥", label: "nsers", value: "Manage", color: "#F59E0B" },
   ];
 
   return (
@@ -72,7 +72,7 @@ export default function AdminOverviewPage() {
         </h1>
 
         <p className="text-sm text-slate-400 mt-1">
-          Manage Pharma Core content — by Dr. Mazen Ashraf
+          Manage nniHub content — by Dr. Mazen Ashraf
         </p>
       </div>
 

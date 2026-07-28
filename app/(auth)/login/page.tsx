@@ -51,15 +51,13 @@ export default function LoginPage() {
       {/* Brand */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary flex items-center justify-center text-2xl">
-            💊
-          </div>
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-500 to-secondary flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-primary-500/20">U</div>
           <div className="text-left">
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">Pharma Core</h1>
+            <h1 className="text-2xl font-extrabold text-white tracking-tight">UniHub</h1>
             <p className="text-xs text-secondary font-bold tracking-widest uppercase">by Dr. Mazen Ashraf</p>
           </div>
         </div>
-        <p className="text-sm text-slate-400 mt-2">Master Pharmacology. Ace your exams.</p>
+        <p className="text-sm text-slate-400 mt-2">Learn. Practice. Excel.</p>
       </div>
 
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">

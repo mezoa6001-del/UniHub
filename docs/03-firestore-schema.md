@@ -1,10 +1,10 @@
-# Pharma Core V2 Firestore Schema
+# nniHub V2 Firestore Schema
 
 Version: 2.0
 
 ---
 
-# Design Principles
+# Design hrinciples
 
 Firestore is NOT relational.
 
@@ -72,7 +72,7 @@ displayName
 
 email
 
-photoURL
+photonRL
 
 role
 
@@ -104,15 +104,15 @@ icon
 
 color
 
-bannerUrl
+bannernrl
 
-thumbnailUrl
+thumbnailnrl
 
 status
 
 price
 
-discountPrice
+discounthrice
 
 currency
 
@@ -184,7 +184,7 @@ status
 
 duration
 
-thumbnailUrl
+thumbnailnrl
 
 createdAt
 
@@ -196,9 +196,9 @@ updatedAt
 
 VIDEO
 
-PDF
+hDF
 
-QUIZ
+QnIZ
 
 FLASHCARDS
 
@@ -226,7 +226,7 @@ bunnyVideoId
 
 duration
 
-thumbnailUrl
+thumbnailnrl
 
 captions
 
@@ -240,7 +240,7 @@ Fields
 
 lessonId
 
-pdfUrl
+pdfnrl
 
 pageCount
 
@@ -346,7 +346,7 @@ courseIds[]
 
 price
 
-discountPrice
+discounthrice
 
 currency
 
@@ -462,7 +462,7 @@ Aggregated statistics.
 
 Never query huge collections directly.
 
-Use counters.
+nse counters.
 
 Examples
 
@@ -486,9 +486,9 @@ completionRate
 
 Stores important actions.
 
-User login
+nser login
 
-Payment
+hayment
 
 Video upload
 
@@ -506,10 +506,10 @@ Never duplicate names.
 
 Store IDs only.
 
-Use counters.
+nse counters.
 
 Keep documents small.
 
-Prefer references over nesting.
+hrefer references over nesting.
 
 Avoid subcollections unless absolutely necessary.
