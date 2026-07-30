@@ -3,7 +3,7 @@
 import { Badge, Card, PrimaryBtn } from "@/components/ui";
 
 import type { Chapter } from "../../types";
-
+import { useRouter } from "next/navigation";
 interface ChapterCardProps {
   chapter: Chapter;
   onEdit?: (chapter: Chapter) => void;
@@ -15,6 +15,7 @@ export function ChapterCard({
   onEdit,
   onDelete,
 }: ChapterCardProps) {
+    const router = useRouter();
   return (
     <Card className="space-y-5">
       <div className="flex items-start justify-between gap-4">
@@ -52,19 +53,30 @@ export function ChapterCard({
       </div>
 
       <div className="flex items-center justify-end gap-3">
-        <PrimaryBtn
-          onClick={() => onEdit?.(chapter)}
-        >
-          Edit
-        </PrimaryBtn>
+  <PrimaryBtn
+    onClick={() => onEdit?.(chapter)}
+  >
+    Edit
+  </PrimaryBtn>
 
-        <PrimaryBtn
-          className="bg-red-600 hover:bg-red-700"
-          onClick={() => onDelete?.(chapter)}
-        >
-          Delete
-        </PrimaryBtn>
-      </div>
+  <PrimaryBtn
+    className="bg-indigo-600 hover:bg-indigo-700"
+    onClick={() =>
+      router.push(
+        `/admin/chapters/${chapter.id}/lessons`
+      )
+    }
+  >
+    Lessons
+  </PrimaryBtn>
+
+  <PrimaryBtn
+    className="bg-red-600 hover:bg-red-700"
+    onClick={() => onDelete?.(chapter)}
+  >
+    Delete
+  </PrimaryBtn>
+</div>
     </Card>
   );
 }
