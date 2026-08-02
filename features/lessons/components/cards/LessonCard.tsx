@@ -1,3 +1,7 @@
+"use client";
+
+import Link from "next/link";
+
 import type { Lesson } from "../../types";
 
 type LessonCardProps = {
@@ -15,7 +19,9 @@ export function LessonCard({
     <div className="rounded-lg border p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-semibold">{lesson.title}</h3>
+          <h3 className="font-semibold">
+            {lesson.title}
+          </h3>
 
           <p className="text-sm text-gray-500">
             Order: {lesson.order}
@@ -33,16 +39,23 @@ export function LessonCard({
         </div>
 
         <div className="flex gap-2">
+          <Link
+            href={`/admin/lessons/${lesson.id}`}
+            className="rounded bg-emerald-600 px-3 py-2 text-white hover:bg-emerald-700 transition"
+          >
+            Manage Content
+          </Link>
+
           <button
             onClick={() => onEdit?.(lesson)}
-            className="rounded bg-blue-600 px-3 py-2 text-white"
+            className="rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700 transition"
           >
             Edit
           </button>
 
           <button
             onClick={() => onDelete?.(lesson)}
-            className="rounded bg-red-600 px-3 py-2 text-white"
+            className="rounded bg-red-600 px-3 py-2 text-white hover:bg-red-700 transition"
           >
             Delete
           </button>
