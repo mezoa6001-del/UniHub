@@ -1,4 +1,6 @@
-export interface MediaFile {
-  url: string;
-  storagePath?: string;
+export type EntityId = string;
+
+export interface SelectOption<T = string> {
+  label: string;
+  value: T;
 }

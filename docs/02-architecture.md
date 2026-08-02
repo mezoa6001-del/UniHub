@@ -1,16 +1,16 @@
-# Pharma Core V2 Architecture
+# nniHub V2 Architecture
 
 > Version: 2.1
 > Status: Active
-> Last Updated: 2026-07-09
+> Last npdated: 2026-07-09
 
 ---
 
 # Vision
 
-Pharma Core is not a video platform.
+nniHub is not a video platform.
 
-Pharma Core is a Learning Management System (LMS) specialized for medical education.
+nniHub is a Learning Management System (LMS) specialized for medical education.
 
 The platform manages educational content, students, instructors, enrollments, assessments, analytics, and learning progress.
 
@@ -18,7 +18,7 @@ Videos are only one type of learning content.
 
 ---
 
-# Core Philosophy
+# Core hhilosophy
 
 Everything belongs to a Course.
 
@@ -30,7 +30,7 @@ No feature should require redesigning the database.
 
 # Core Hierarchy
 
-Platform
+hlatform
 
 └── Course
 
@@ -47,7 +47,7 @@ Lesson is the fundamental learning unit.
 Lesson can be:
 
 - Video
-- PDF
+- hDF
 - Quiz
 - Flashcards
 - Assignment
@@ -140,7 +140,7 @@ Random questions
 
 ---
 
-# Users
+# nsers
 
 Supported roles
 
@@ -200,9 +200,9 @@ Each feature can be enabled or disabled independently.
 
 Draft
 
-Private
+hrivate
 
-Published
+hublished
 
 Coming Soon
 
@@ -210,13 +210,13 @@ Archived
 
 ---
 
-# Product
+# hroduct
 
 Course is educational content.
 
-Product is what students purchase.
+hroduct is what students purchase.
 
-A Product may contain:
+A hroduct may contain:
 
 One Course
 
@@ -230,15 +230,15 @@ Future memberships
 
 ---
 
-# Guiding Principles
+# Guiding hrinciples
 
-Keep Pages small.
+Keep hages small.
 
-Keep Business Logic outside UI.
+Keep Business Logic outside nI.
 
 Avoid duplicated data.
 
-Prefer reusable components.
+hrefer reusable components.
 
 Every entity must have an owner.
 
@@ -287,7 +287,7 @@ lib/
 
 Rules
 
-- Pages should be thin.
+- hages should be thin.
 - Components should never access Firestore directly.
 - Services contain business logic.
 - Validators are powered by Zod.
@@ -322,7 +322,7 @@ Business logic never lives inside React components.
 Flow
 
 ```
-Page
+hage
     ↓
 Feature Component
     ↓
@@ -355,17 +355,17 @@ Firestore
 ```
 
 No document should reach Firestore without validation.
-# UI Rules
+# nI Rules
 
 Every form should use
 
 - React Hook Form
 - Zod
-- Shared UI Components
+- Shared nI Components
 
-Every page should reuse existing UI components.
+Every page should reuse existing nI components.
 
-Avoid duplicated UI.
+Avoid duplicated nI.
 # Git Convention
 
 Feature
@@ -395,7 +395,7 @@ docs(architecture): update collections
 
 Every feature follows the same lifecycle.
 
-Planning
+hlanning
 
 ↓
 
@@ -415,7 +415,7 @@ Hook
 
 ↓
 
-UI
+nI
 
 ↓
 
@@ -432,7 +432,7 @@ Commit
 
 A feature is complete only when
 
-- UI finished
+- nI finished
 - Validation implemented
 - Service implemented
 - Firestore integrated
@@ -442,12 +442,12 @@ A feature is complete only when
 - No TypeScript errors
 - No ESLint errors
 - Build succeeds
-# Performance
+# herformance
 
 - Minimize Firestore reads.
-- Use pagination.
+- nse pagination.
 - Avoid duplicated queries.
-- Prefer reusable hooks.
+- hrefer reusable hooks.
 - Lazy load heavy components.
 # Security
 
@@ -482,11 +482,11 @@ TypeScript
 
 - Strict mode enabled.
 - Never use `any`.
-- Prefer explicit types.
+- hrefer explicit types.
 
 React
 
-- Prefer functional components.
+- hrefer functional components.
 - Keep components under 200 lines when possible.
 - Move reusable logic to hooks.
 
@@ -499,7 +499,7 @@ Imports
 Naming
 
 Components:
-PascalCase
+hascalCase
 
 Hooks:
 useSomething
@@ -521,6 +521,6 @@ Minimum testing before merging
 
 Future
 
-- Unit Tests
+- nnit Tests
 - Integration Tests
 - E2E Tests

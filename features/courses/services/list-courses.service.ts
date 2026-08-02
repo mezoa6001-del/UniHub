@@ -23,21 +23,15 @@ export async function listCourses(): Promise<Course[]> {
 
     return {
       id: doc.id,
-
       title: data.title ?? "",
       slug: data.slug ?? "",
       description: data.description ?? "",
-
       thumbnailUrl: data.thumbnailUrl ?? "",
-
       ownerId: data.ownerId ?? "",
       instructorIds: data.instructorIds ?? [],
-
       status: data.status ?? "draft",
-
       createdBy: data.createdBy ?? "",
       updatedBy: data.updatedBy ?? "",
-
       createdAt: data.createdAt ?? null,
       updatedAt: data.updatedAt ?? null,
       deletedAt: data.deletedAt ?? null,

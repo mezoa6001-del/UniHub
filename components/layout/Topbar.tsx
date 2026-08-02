@@ -24,7 +24,7 @@ const TITLES: Record<string, string> = {
 export function Topbar() {
   const pathname = usePathname();
   const { profile } = useAuth();
-  const title = Object.entries(TITLES).find(([k]) => pathname === k || pathname.startsWith(k + "/"))?.[1] ?? "Pharma Core";
+  const title = Object.entries(TITLES).find(([k]) => pathname === k || pathname.startsWith(k + "/"))?.[1] ?? "UniHub";
 
   return (
     <header className="sticky top-0 z-30 h-[58px] bg-[#0A1628] border-b border-white/7 flex items-center px-6 gap-4">

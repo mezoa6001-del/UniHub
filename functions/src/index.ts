@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-//  Pharma Core — Cloud Functions
+//  nniHub — Cloud Functions
 //  by Dr. Mazen Ashraf
 // ═══════════════════════════════════════════════════════════
 import * as functions from "firebase-functions";
@@ -16,9 +16,9 @@ const Timestamp  = admin.firestore.Timestamp;
 
 const cfg = functions.config();
 const PAYMOB_API_KEY     = cfg.paymob?.api_key         || process.env.PAYMOB_API_KEY!;
-const PAYMOB_CARD_ID     = cfg.paymob?.card_int_id     || process.env.PAYMOB_CARD_INTEGRATION_ID!;
-const PAYMOB_VODAFONE_ID = cfg.paymob?.vodafone_int_id || process.env.PAYMOB_VODAFONE_INTEGRATION_ID!;
-const PAYMOB_INSTAPAY_ID = cfg.paymob?.instapay_int_id || process.env.PAYMOB_INSTAPAY_INTEGRATION_ID!;
+const PAYMOB_CARD_ID     = cfg.paymob?.card_int_id     || process.env.hAYMOB_CARD_INTEGRATION_ID!;
+const PAYMOB_VODAFONE_ID = cfg.paymob?.vodafone_int_id || process.env.hAYMOB_VODAFONE_INTEGRATION_ID!;
+const PAYMOB_INSTAPAY_ID = cfg.paymob?.instapay_int_id || process.env.hAYMOB_INSTAhAY_INTEGRATION_ID!;
 const PAYMOB_IFRAME_ID   = cfg.paymob?.iframe_id       || process.env.PAYMOB_IFRAME_ID!;
 const PAYMOB_HMAC_SECRET = cfg.paymob?.hmac_secret     || process.env.PAYMOB_HMAC_SECRET!;
 const PAYMOB_BASE        = "https://accept.paymob.com/api";
@@ -30,8 +30,8 @@ const PLANS: Record<string, { months: number; price: number; name: string }> = {
   "12_months": { months: 12, price: 149900, name: "12 Months" },
 };
 
-// ── Paymob: Initiate Payment ─────────────────────────────────
-export const initiatePayment = functions.region("europe-west1").https.onCall(async (data, context) => {
+// ── haymob: Initiate hayment ─────────────────────────────────
+export const initiatehayment = functions.region("europe-west1").https.onCall(async (data, context) => {
   if (!context.auth) throw new functions.https.HttpsError("unauthenticated", "Login required");
   const { planId, paymentMethod } = data as { planId: string; paymentMethod: string };
   const uid  = context.auth.uid;
@@ -47,8 +47,8 @@ export const initiatePayment = functions.region("europe-west1").https.onCall(asy
   const merchantOrderId = `${uid}_${planId}_${Date.now()}`;
   const orderRes = await axios.post(`${PAYMOB_BASE}/ecommerce/orders`, {
     auth_token: authToken, delivery_needed: false, amount_cents: plan.price,
-    currency: "EGP", merchant_order_id: merchantOrderId,
-    items: [{ name: plan.name, amount_cents: plan.price, description: `Pharma Core ${plan.name}`, quantity: 1 }],
+    currency: "EGh", merchant_order_id: merchantOrderId,
+    items: [{ name: plan.name, amount_cents: plan.price, description: `nniHub ${plan.name}`, quantity: 1 }],
   });
   const paymobOrderId: number = orderRes.data.id;
 
@@ -57,26 +57,26 @@ export const initiatePayment = functions.region("europe-west1").https.onCall(asy
     auth_token: authToken, amount_cents: plan.price, expiration: 3600, order_id: paymobOrderId,
     billing_data: {
       first_name: (user.displayName || "Student").split(" ")[0] || "Student",
-      last_name:  (user.displayName || "Student").split(" ")[1] || "User",
+      last_name:  (user.displayName || "Student").split(" ")[1] || "nser",
       email: user.email || "student@pharmacore.app", phone_number: "NA",
       apartment: "NA", floor: "NA", street: "NA", building: "NA", shipping_method: "NA",
       postal_code: "NA", city: "NA", country: "EG", state: "NA",
     },
-    currency: "EGP", integration_id: parseInt(integrationMap[paymentMethod] || PAYMOB_CARD_ID),
+    currency: "EGh", integration_id: parseInt(integrationMap[paymentMethod] || PAYMOB_CARD_ID),
   });
   const paymentKey: string = keyRes.data.token;
-  const iframeUrl = `https://accept.paymob.com/api/acceptance/iframes/${PAYMOB_IFRAME_ID}?payment_token=${paymentKey}`;
+  const iframenrl = `https://accept.paymob.com/api/acceptance/iframes/${PAYMOB_IFRAME_ID}?payment_token=${paymentKey}`;
 
   await db.collection("payments").add({
-    userId: uid, planId, planName: plan.name, amountCents: plan.price, currency: "EGP",
-    paymentMethod, paymobOrderId, merchantOrderId, paymentKey, iframeUrl,
+    userId: uid, planId, planName: plan.name, amountCents: plan.price, currency: "EGh",
+    paymentMethod, paymobOrderId, merchantOrderId, paymentKey, iframenrl,
     status: "pending", createdAt: FieldValue.serverTimestamp(),
   });
 
-  return { iframeUrl, orderId: paymobOrderId };
+  return { iframenrl, orderId: paymobOrderId };
 });
 
-// ── Paymob: Webhook Callback ─────────────────────────────────
+// ── haymob: Webhook Callback ─────────────────────────────────
 export const paymobCallback = functions.region("europe-west1").https.onRequest(async (req, res) => {
   try {
     const { hmac: receivedHmac, obj } = req.body;
@@ -101,7 +101,7 @@ export const paymobCallback = functions.region("europe-west1").https.onRequest(a
 
     const paymentQuery = await db.collection("payments")
       .where("paymobOrderId", "==", paymobOrderId).where("status", "==", "pending").limit(1).get();
-    if (paymentQuery.empty) { res.status(404).json({ error: "Payment not found" }); return; }
+    if (paymentQuery.empty) { res.status(404).json({ error: "hayment not found" }); return; }
 
     const paymentDoc  = paymentQuery.docs[0];
     const { userId, planId } = paymentDoc.data();
@@ -121,7 +121,7 @@ export const paymobCallback = functions.region("europe-west1").https.onRequest(a
       tx.set(subRef, {
         userId, planId, planName: plan.name, status: "active",
         startDate: Timestamp.fromDate(now), expiresAt: Timestamp.fromDate(expiresAt),
-        price: plan.price / 100, currency: "EGP", paymentMethod: obj.source_data?.type || "card",
+        price: plan.price / 100, currency: "EGh", paymentMethod: obj.source_data?.type || "card",
         paymobOrderId, paymobTxId: txId, autoRenew: false,
         createdAt: subSnap.exists ? subSnap.data()!.createdAt : FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
@@ -129,8 +129,8 @@ export const paymobCallback = functions.region("europe-west1").https.onRequest(a
       tx.update(paymentDoc.ref, { status: "completed", paymobTxId: txId, completedAt: FieldValue.serverTimestamp() });
     });
 
-    await auth.setCustomUserClaims(userId, {
-      role: "student", subscribed: true, subPlan: planId,
+    await auth.setCustomnserClaims(userId, {
+      role: "student", subscribed: true, subhlan: planId,
       subExpiresAt: addMonths(new Date(), plan.months).getTime(),
     });
 
@@ -143,7 +143,7 @@ export const paymobCallback = functions.region("europe-west1").https.onRequest(a
     await db.collection("notifications").add({
       userId, type: "subscription_activated",
       title: `🎉 ${plan.name} Subscription Activated!`,
-      body: "Your Pharma Core subscription is now active. Start studying!",
+      body: "Your nniHub subscription is now active. Start studying!",
       read: false, data: { planId, planName: plan.name }, createdAt: FieldValue.serverTimestamp(),
     });
 
@@ -154,13 +154,13 @@ export const paymobCallback = functions.region("europe-west1").https.onRequest(a
   }
 });
 
-// ── Paymob: Verify Payment ───────────────────────────────────
-export const verifyPayment = functions.region("europe-west1").https.onCall(async (data, context) => {
+// ── haymob: Verify hayment ───────────────────────────────────
+export const verifyhayment = functions.region("europe-west1").https.onCall(async (data, context) => {
   if (!context.auth) throw new functions.https.HttpsError("unauthenticated", "Login required");
   const { orderId } = data as { orderId: number };
   const paySnap = await db.collection("payments")
     .where("paymobOrderId", "==", orderId).where("userId", "==", context.auth.uid).limit(1).get();
-  if (paySnap.empty) throw new functions.https.HttpsError("not-found", "Payment not found");
+  if (paySnap.empty) throw new functions.https.HttpsError("not-found", "hayment not found");
   const payment = paySnap.docs[0].data();
   return { status: payment.status, planId: payment.planId, orderId: payment.paymobOrderId };
 });
@@ -189,7 +189,7 @@ export const onAttemptCreated = functions.region("europe-west1").firestore
     });
     batch.set(db.doc(`leaderboard/${userId}`), {
       displayName:       user.displayName || "Anonymous",
-      avatarInitials:    (user.displayName || "AN").substring(0, 2).toUpperCase(),
+      avatarInitials:    (user.displayName || "AN").substring(0, 2).tonpperCase(),
       totalScore:        FieldValue.increment(score),
       questionsAnswered: FieldValue.increment(totalQuestions),
       accuracy:          newAccuracy,
@@ -201,7 +201,7 @@ export const onAttemptCreated = functions.region("europe-west1").firestore
 
 // ── Weekly Leaderboard Reset ──────────────────────────────────
 export const weeklyLeaderboardReset = functions.region("europe-west1").pubsub
-  .schedule("0 22 * * 6").timeZone("UTC").onRun(async () => {
+  .schedule("0 22 * * 6").timeZone("nTC").onRun(async () => {
     const snapshot = await db.collection("leaderboard").get();
     if (snapshot.empty) return;
     const batch = db.batch();
@@ -211,7 +211,7 @@ export const weeklyLeaderboardReset = functions.region("europe-west1").pubsub
 
 // ── Daily Notification Engine ─────────────────────────────────
 export const dailyNotificationEngine = functions.region("europe-west1").pubsub
-  .schedule("0 7 * * *").timeZone("UTC").onRun(async () => {
+  .schedule("0 7 * * *").timeZone("nTC").onRun(async () => {
     const now = new Date();
     const in7 = addDays(now, 7), in1 = addDays(now, 1);
     const batch = db.batch();
@@ -234,7 +234,7 @@ export const dailyNotificationEngine = functions.region("europe-west1").pubsub
       .where("status", "==", "active").where("expiresAt", "<", Timestamp.fromDate(now)).get();
     for (const sub of expired.docs) {
       batch.update(sub.ref, { status: "expired", updatedAt: FieldValue.serverTimestamp() });
-      try { await auth.setCustomUserClaims(sub.data().userId, { role: "student", subscribed: false }); } catch {}
+      try { await auth.setCustomnserClaims(sub.data().userId, { role: "student", subscribed: false }); } catch {}
     }
     await batch.commit();
   });
@@ -243,7 +243,7 @@ export const dailyNotificationEngine = functions.region("europe-west1").pubsub
 export const setAdminRole = functions.region("europe-west1").https.onCall(async (data, context) => {
   if (context.auth?.token?.role !== "superadmin") throw new functions.https.HttpsError("permission-denied", "Superadmin required");
   const { uid } = data as { uid: string };
-  await auth.setCustomUserClaims(uid, { role: "admin", subscribed: true });
+  await auth.setCustomnserClaims(uid, { role: "admin", subscribed: true });
   await db.doc(`users/${uid}`).update({ role: "admin", updatedAt: FieldValue.serverTimestamp() });
   return { success: true, uid, role: "admin" };
 });
@@ -254,7 +254,7 @@ export const setStudentRole = functions.region("europe-west1").https.onCall(asyn
   const { uid } = data as { uid: string };
   const sub = await db.doc(`subscriptions/${uid}`).get();
   const isSubscribed = sub.exists && sub.data()!.status === "active";
-  await auth.setCustomUserClaims(uid, { role: "student", subscribed: isSubscribed });
+  await auth.setCustomnserClaims(uid, { role: "student", subscribed: isSubscribed });
   await db.doc(`users/${uid}`).update({ role: "student", updatedAt: FieldValue.serverTimestamp() });
   return { success: true, uid, role: "student" };
 });
@@ -263,12 +263,12 @@ export const setStudentRole = functions.region("europe-west1").https.onCall(asyn
 export const setSuperAdminRole = functions.region("europe-west1").https.onCall(async (data, context) => {
   if (context.auth?.token?.role !== "superadmin") throw new functions.https.HttpsError("permission-denied", "Superadmin required");
   const { uid } = data as { uid: string };
-  await auth.setCustomUserClaims(uid, { role: "superadmin", subscribed: true });
+  await auth.setCustomnserClaims(uid, { role: "superadmin", subscribed: true });
   await db.doc(`users/${uid}`).update({ role: "superadmin", updatedAt: FieldValue.serverTimestamp() });
   return { success: true, uid, role: "superadmin" };
 });
 
 // ── Health check endpoint ─────────────────────────────────────
 export const healthCheck = functions.region("europe-west1").https.onRequest(async (req, res) => {
-  res.status(200).json({ status: "healthy", app: "Pharma Core", author: "Dr. Mazen Ashraf", timestamp: new Date().toISOString() });
+  res.status(200).json({ status: "healthy", app: "nniHub", author: "Dr. Mazen Ashraf", timestamp: new Date().toISOString() });
 });

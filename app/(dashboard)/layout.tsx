@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="min-h-screen bg-[#0A1628] flex items-center justify-center flex-col gap-4">
         <div className="text-5xl">💊</div>
         <div className="w-8 h-8 border-3 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
-        <p className="text-primary-400 font-bold text-sm">Loading Pharma Core…</p>
+        <p className="text-primary-400 font-bold text-sm">Loading UniHub…</p>
       </div>
     );
   }

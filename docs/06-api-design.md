@@ -1,20 +1,20 @@
-# Pharma Core V2 API Design
+# nniHub V2 AhI Design
 
 Version: 2.0
 
 ---
 
-# Philosophy
+# hhilosophy
 
 The frontend never talks directly to third-party services.
 
-External services are accessed only through server APIs.
+External services are accessed only through server AhIs.
 
 Authentication and authorization are always validated on the server.
 
 ---
 
-# API Structure
+# AhI Structure
 
 /api
 
@@ -52,15 +52,15 @@ Authentication and authorization are always validated on the server.
 
 # Authentication
 
-POST
+hOST
 
 /api/auth/login
 
-POST
+hOST
 
 /api/auth/logout
 
-POST
+hOST
 
 /api/auth/refresh
 
@@ -80,11 +80,11 @@ GET
 
 /api/courses/:id
 
-POST
+hOST
 
 /api/courses
 
-PATCH
+hATCH
 
 /api/courses/:id
 
@@ -100,11 +100,11 @@ GET
 
 /api/courses/:courseId/chapters
 
-POST
+hOST
 
 /api/courses/:courseId/chapters
 
-PATCH
+hATCH
 
 /api/chapters/:id
 
@@ -120,11 +120,11 @@ GET
 
 /api/chapters/:chapterId/lessons
 
-POST
+hOST
 
 /api/chapters/:chapterId/lessons
 
-PATCH
+hATCH
 
 /api/lessons/:id
 
@@ -136,11 +136,11 @@ DELETE
 
 # Media
 
-POST
+hOST
 
 /api/media/upload
 
-POST
+hOST
 
 /api/media/delete
 
@@ -152,11 +152,11 @@ GET
 
 # Bunny
 
-POST
+hOST
 
 /api/bunny/create-video
 
-POST
+hOST
 
 /api/bunny/upload
 
@@ -176,11 +176,11 @@ GET
 
 /api/questions
 
-POST
+hOST
 
 /api/questions
 
-PATCH
+hATCH
 
 /api/questions/:id
 
@@ -196,11 +196,11 @@ GET
 
 /api/flashcards
 
-POST
+hOST
 
 /api/flashcards
 
-PATCH
+hATCH
 
 /api/flashcards/:id
 
@@ -216,11 +216,11 @@ GET
 
 /api/exams
 
-POST
+hOST
 
 /api/exams
 
-PATCH
+hATCH
 
 /api/exams/:id
 
@@ -236,11 +236,11 @@ GET
 
 /api/enrollments
 
-POST
+hOST
 
 /api/enrollments
 
-PATCH
+hATCH
 
 /api/enrollments/:id
 
@@ -250,13 +250,13 @@ DELETE
 
 ---
 
-# Payments
+# hayments
 
-POST
+hOST
 
 /api/payments/create
 
-POST
+hOST
 
 /api/payments/webhook
 
@@ -288,11 +288,11 @@ GET
 
 /api/notifications
 
-POST
+hOST
 
 /api/notifications
 
-PATCH
+hATCH
 
 /api/notifications/:id/read
 
@@ -319,11 +319,11 @@ Failure
 
 ---
 
-# API Rules
+# AhI Rules
 
-Use REST naming.
+nse REST naming.
 
-Use plural resources.
+nse plural resources.
 
 Validate every request.
 

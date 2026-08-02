@@ -50,7 +50,11 @@ export default function DashboardPage() {
       <div className="relative bg-gradient-to-r from-navy to-navy-light rounded-2xl p-7 overflow-hidden">
         <div className="absolute right-0 top-0 w-48 h-48 bg-primary-500/10 rounded-full -translate-y-1/4 translate-x-1/4 blur-2xl" />
         <div className="relative">
-          <h1 className="text-2xl font-extrabold text-white mb-1">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary-400/25 bg-primary-500/10 px-3 py-1 mb-4">
+            <span className="w-5 h-5 rounded-md bg-gradient-to-br from-primary-500 to-secondary flex items-center justify-center text-[11px] font-black text-white">U</span>
+            <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary-300">UniHub</span>
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white mb-1">
             Welcome back, {profile?.displayName?.split(" ")[0] ?? "Doctor"} 👋
           </h1>
           <p className="text-slate-400 text-sm mb-5">

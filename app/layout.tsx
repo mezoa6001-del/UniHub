@@ -2,15 +2,17 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
+import { QueryProvider } from "@/providers/query-provider";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
-  title: "Pharma Core — by Dr. Mazen Ashraf",
+  title: "UniHub — by Dr. Mazen Ashraf",
   description:
-    "Master Pharmacology. Ace your exams. The complete pharmaceutical education platform.",
+    "Learn. Practice. Excel. The complete pharmaceutical education platform.",
   keywords: [
     "pharmacology",
     "exam prep",
@@ -25,8 +27,8 @@ export const metadata: Metadata = {
     apple: "/icons/icon-512.png",
   },
   openGraph: {
-    title: "Pharma Core",
-    description: "Master Pharmacology. Ace your exams.",
+    title: "UniHub",
+    description: "Learn. Practice. Excel.",
     type: "website",
     locale: "en_US",
   },
@@ -48,7 +50,9 @@ export default function RootLayout({
       <body
         className={`${inter.variable} font-sans bg-[#0A1628] text-[#E8F0FE] antialiased`}
       >
-        {children}
+        <QueryProvider>
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

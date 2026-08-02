@@ -1,12 +1,12 @@
-# Pharma Core V2 Architecture
+# nniHub V2 Architecture
 
-> Last Updated: 2026
+> Last npdated: 2026
 
 ---
 
 # Vision
 
-Pharma Core is a modern LMS for medical education built with
+nniHub is a modern LMS for medical education built with
 Next.js, Firebase and TypeScript.
 
 The project follows a Feature-First Architecture with a shared
@@ -44,7 +44,7 @@ public/
 
 ## Shared Components
 
-Reusable UI components belong to:
+Reusable nI components belong to:
 
 components/ui
 
@@ -81,7 +81,7 @@ Business logic and Firestore access belong to:
 
 features/*/services
 
-Services never contain UI.
+Services never contain nI.
 
 ---
 
@@ -113,7 +113,7 @@ types/
 
 Components
 
-PascalCase
+hascalCase
 
 Example
 
@@ -145,4 +145,4 @@ delete-course.service.ts
 
 Status
 
-🚧 Under Development
+🚧 nnder Development
