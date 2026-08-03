@@ -13,13 +13,13 @@ import type {
   LeaderboardEntry, NotificationDoc,
 } from "@/types";
 
-// ΓöÇΓöÇ Helpers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Helpers 
 const col  = (name: string) => collection(db, name);
 const dref = (path: string, id: string) => doc(db, path, id);
 const ts   = () => serverTimestamp();
 const inc  = (n: number) => increment(n);
 
-// ΓöÇΓöÇ Users ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Users 
 export async function createUserProfile(uid: string, data: Partial<UserDoc>) {
   await setDoc(dref("users", uid), {
     uid, role: "student", streak: 0, totalScore: 0,
@@ -43,7 +43,7 @@ export function subscribeToUserProfile(uid: string, cb: (u: UserDoc | null) => v
     cb(s.exists() ? ({ id: s.id, ...s.data() } as unknown as UserDoc) : null));
 }
 
-// ΓöÇΓöÇ Chapters ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Chapters 
 export async function getChapters(): Promise<ChapterDoc[]> {
   const s = await getDocs(query(col("chapters"), orderBy("order", "asc")));
   return s.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as ChapterDoc));
@@ -61,7 +61,7 @@ export async function deleteChapter(id: string) {
   await deleteDoc(dref("chapters", id));
 }
 
-// ΓöÇΓöÇ Questions ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Questions 
 export async function getQuestions(chapterId?: string): Promise<QuestionDoc[]> {
   let q = query(col("questions"), where("isActive", "==", true));
   if (chapterId) q = query(col("questions"), where("isActive", "==", true), where("chapterId", "==", chapterId));
@@ -86,7 +86,11 @@ export async function createQuestion(data: Partial<QuestionDoc>) {
     Object.entries(data).filter(([, value]) => value !== undefined)
   );
 
-  const ref = await addDoc(col("questions"), {
+  const batch = writeBatch(db);
+
+  const questionRef = doc(col("questions"));
+
+  batch.set(questionRef, {
     ...cleaned,
     isActive: true,
     usageCount: 0,
@@ -96,13 +100,14 @@ export async function createQuestion(data: Partial<QuestionDoc>) {
   });
 
   if (data.chapterId) {
-    await updateDoc(
-      dref("chapters", data.chapterId),
-      { questionCount: inc(1) }
-    );
+    batch.update(dref("chapters", data.chapterId), {
+      questionCount: inc(1),
+    });
   }
 
-  return ref;
+  await batch.commit();
+
+  return questionRef;
 }
 
 export async function updateQuestion(id: string, data: Partial<QuestionDoc>) {
@@ -117,11 +122,23 @@ export async function updateQuestion(id: string, data: Partial<QuestionDoc>) {
 }
 
 export async function softDeleteQuestion(id: string, chapterId?: string) {
-  await updateDoc(dref("questions", id), { isActive: false, updatedAt: ts() });
-  if (chapterId) await updateDoc(dref("chapters", chapterId), { questionCount: inc(-1) });
+  const batch = writeBatch(db);
+
+  batch.update(dref("questions", id), {
+    isActive: false,
+    updatedAt: ts(),
+  });
+
+  if (chapterId) {
+    batch.update(dref("chapters", chapterId), {
+      questionCount: inc(-1),
+    });
+  }
+
+  await batch.commit();
 }
 
-// ΓöÇΓöÇ Flashcards ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Flashcards 
 export async function getFlashcards(chapterId?: string): Promise<FlashcardDoc[]> {
   const q = chapterId
     ? query(col("flashcards"), where("chapterId", "==", chapterId), where("isActive", "==", true))
@@ -142,7 +159,7 @@ export async function deleteFlashcard(id: string) {
   await updateDoc(dref("flashcards", id), { isActive: false });
 }
 
-// ΓöÇΓöÇ Flashcard Progress (SM-2) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Flashcard Progress (SM-2) 
 export function sm2Next(prev: Partial<FlashcardProgressDoc>, difficulty: "easy" | "medium" | "hard") {
   const q: Record<string, number> = { easy: 5, medium: 3, hard: 1 };
   let { interval = 1, repetitions = 0, easeFactor = 2.5 } = prev;
@@ -167,7 +184,7 @@ export async function getUserFlashcardProgress(uid: string): Promise<Record<stri
   return m;
 }
 
-// ΓöÇΓöÇ Videos ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Videos 
 export async function getVideos(
   chapterId?: string,
   includeDrafts = false
@@ -209,13 +226,38 @@ export async function deleteVideo(id: string) {
   await deleteDoc(dref("videos", id));
 }
 
-// ΓöÇΓöÇ Video Progress ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-export async function saveVideoProgress(uid: string, videoId: string, watched: number, total: number) {
+//  Video Progress 
+export async function saveVideoProgress(
+  uid: string,
+  videoId: string,
+  watched: number,
+  total: number
+) {
   const pct = Math.round((watched / total) * 100);
-  await setDoc(doc(db, "video_progress", `${uid}_${videoId}`),
-    { userId: uid, videoId, watchedSeconds: watched, totalSeconds: total, percentage: pct, completed: pct >= 95, lastWatchedAt: ts() },
-    { merge: true });
-  if (pct >= 95) await updateDoc(dref("videos", videoId), { viewCount: inc(1) }).catch(() => {});
+
+  await setDoc(
+    doc(db, "video_progress", `${uid}_${videoId}`),
+    {
+      userId: uid,
+      videoId,
+      watchedSeconds: watched,
+      totalSeconds: total,
+      percentage: pct,
+      completed: pct >= 95,
+      lastWatchedAt: ts(),
+    },
+    { merge: true }
+  );
+
+  if (pct >= 95) {
+    try {
+      await updateDoc(dref("videos", videoId), {
+        viewCount: inc(1),
+      });
+    } catch (error) {
+      console.error("Failed to increment video view count:", error);
+    }
+  }
 }
 
 export async function getUserVideoProgress(uid: string): Promise<Record<string, VideoProgressDoc>> {
@@ -225,7 +267,7 @@ export async function getUserVideoProgress(uid: string): Promise<Record<string, 
   return m;
 }
 
-// ΓöÇΓöÇ Bookmarks ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Bookmarks 
 export async function getUserBookmarks(uid: string): Promise<BookmarkDoc[]> {
   const s = await getDocs(query(col("bookmarks"), where("userId", "==", uid)));
   return s.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as BookmarkDoc));
@@ -239,46 +281,83 @@ export async function removeBookmark(id: string) {
   await deleteDoc(dref("bookmarks", id));
 }
 
-// ΓöÇΓöÇ Wrong Questions ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Wrong Questions 
 export async function getUserWrongQuestions(uid: string): Promise<WrongQuestionDoc[]> {
   const s = await getDocs(query(col("wrong_questions"), where("userId", "==", uid), where("resolved", "==", false)));
   return s.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as WrongQuestionDoc));
 }
 
-export async function recordWrongQuestion(uid: string, questionId: string, chapterId: string) {
-  const ex = await getDocs(query(col("wrong_questions"), where("userId", "==", uid), where("questionId", "==", questionId)));
-  if (ex.empty) {
-    await addDoc(col("wrong_questions"), { userId: uid, questionId, chapterId, wrongCount: 1, resolved: false, lastWrongAt: ts() });
-  } else {
-    await updateDoc(ex.docs[0].ref, { wrongCount: inc(1), lastWrongAt: ts(), resolved: false });
+export async function recordWrongQuestion(
+  uid: string,
+  questionId: string,
+  chapterId: string
+) {
+  const snapshot = await getDocs(
+    query(
+      col("wrong_questions"),
+      where("userId", "==", uid),
+      where("questionId", "==", questionId)
+    )
+  );
+
+  if (snapshot.empty) {
+    await addDoc(col("wrong_questions"), {
+      userId: uid,
+      questionId,
+      chapterId,
+      wrongCount: 1,
+      resolved: false,
+      lastWrongAt: ts(),
+    });
+
+    return;
   }
+
+  const docRef = snapshot.docs[0].ref;
+
+  await updateDoc(docRef, {
+    wrongCount: inc(1),
+    lastWrongAt: ts(),
+    resolved: false,
+  });
 }
 
 export async function resolveWrongQuestion(id: string) {
   await updateDoc(dref("wrong_questions", id), { resolved: true });
 }
 
-// ΓöÇΓöÇ Attempts ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// Attempts
 export async function saveAttempt(uid: string, data: Partial<AttemptDoc>, displayName: string) {
-  await addDoc(col("attempts"), { userId: uid, ...data, completedAt: ts() });
-  await updateDoc(dref("users", uid), {
-    questionsAnswered: inc(data.totalQuestions ?? 0),
-    correctAnswers:    inc(data.correctCount   ?? 0),
-    totalScore:        inc(data.score          ?? 0),
-    updatedAt:         ts(),
+  const batch = writeBatch(db);
+  const attemptRef = doc(col("attempts"));
+
+  batch.set(attemptRef, {
+    userId: uid,
+    ...data,
+    completedAt: ts(),
   });
-  await setDoc(
-  dref("leaderboard", uid),
-  {
-    displayName,
-    totalScore: inc(data.score ?? 0),
+
+  batch.update(dref("users", uid), {
     questionsAnswered: inc(data.totalQuestions ?? 0),
     correctAnswers: inc(data.correctCount ?? 0),
-    weeklyScore: inc(data.score ?? 0),
+    totalScore: inc(data.score ?? 0),
     updatedAt: ts(),
-  },
-  { merge: true }
-);
+  });
+
+  batch.set(
+    dref("leaderboard", uid),
+    {
+      displayName,
+      totalScore: inc(data.score ?? 0),
+      questionsAnswered: inc(data.totalQuestions ?? 0),
+      correctAnswers: inc(data.correctCount ?? 0),
+      weeklyScore: inc(data.score ?? 0),
+      updatedAt: ts(),
+    },
+    { merge: true }
+  );
+
+  await batch.commit();
 }
 
 export async function getUserAttempts(uid: string): Promise<AttemptDoc[]> {
@@ -286,7 +365,7 @@ export async function getUserAttempts(uid: string): Promise<AttemptDoc[]> {
   return s.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as AttemptDoc));
 }
 
-// ΓöÇΓöÇ Leaderboard ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// Leaderboard
 export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
   const s = await getDocs(query(col("leaderboard"), orderBy("totalScore", "desc"), limit(20)));
   return s.docs.map((d, i) => ({ id: d.id, rank: i + 1, ...d.data() } as unknown as LeaderboardEntry));
@@ -299,7 +378,7 @@ export function subscribeLeaderboard(cb: (entries: LeaderboardEntry[]) => void) 
   );
 }
 
-// ΓöÇΓöÇ Subscription ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Subscription 
 export function subscribeToSubscription(uid: string, cb: (sub: (SubscriptionDoc & { isActive: boolean }) | null) => void) {
   return onSnapshot(dref("subscriptions", uid), (s) => {
     if (!s.exists()) { cb(null); return; }
@@ -309,7 +388,7 @@ export function subscribeToSubscription(uid: string, cb: (sub: (SubscriptionDoc 
   });
 }
 
-// ΓöÇΓöÇ Notifications ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Notifications 
 export function subscribeToNotifications(uid: string, cb: (n: NotificationDoc[]) => void) {
   return onSnapshot(
     query(col("notifications"), where("userId", "==", uid), orderBy("createdAt", "desc"), limit(30)),
@@ -328,7 +407,7 @@ export async function markAllNotificationsRead(uid: string) {
   await b.commit();
 }
 
-// ΓöÇΓöÇ Admin helpers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+//  Admin helpers 
 export async function listAllUsers(pageSize = 50, lastDoc?: QueryDocumentSnapshot<DocumentData>) {
   let q = query(col("users"), orderBy("createdAt", "desc"), limit(pageSize));
   if (lastDoc) q = query(q, startAfter(lastDoc));

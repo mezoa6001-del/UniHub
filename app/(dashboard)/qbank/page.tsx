@@ -18,7 +18,22 @@ export default function QBankPage() {
   const [filter,    setFilter]    = useState<"all"|"bookmarked"|"incorrect">("all");
   const [loading,   setLoading]   = useState(false);
 
-  useEffect(() => { getChapters().then(setChapters); }, []);
+  useEffect(() => {
+  if (!profile) {
+    setLoading(false);
+    return;
+  }
+
+  Promise.all([
+    getChapters(),
+    getUserAttempts(profile.uid),
+  ])
+    .then(([ch, att]) => {
+      setChapters(ch);
+      setAttempts(att);
+    })
+    .finally(() => setLoading(false));
+}, [profile]);
 
   const toggle = (id: string) =>
     setSelCh((s) => s.includes(id) ? s.filter((x) => x !== id) : [...s, id]);
@@ -40,9 +55,18 @@ export default function QBankPage() {
         qs = qs.filter((q) => ids.has(q.id));
       }
 
-      if (!qs.length) { alert("No questions match your filters. Try adjusting your selection."); return; }
+      if (!qs.length) {
+  alert("No questions match your filters. Try adjusting your selection.");
+  setLoading(false);
+  return;
+}
 
-      const selected = qs.sort(() => Math.random() - 0.5).slice(0, Math.min(numQ, qs.length));
+      const shuffled = [...qs].sort(() => Math.random() - 0.5);
+
+const selected = shuffled.slice(
+  0,
+  Math.min(numQ, shuffled.length)
+);
       startSession(selected, mode, mode === "timed");
       router.push("/qbank/exam");
     } finally { setLoading(false); }

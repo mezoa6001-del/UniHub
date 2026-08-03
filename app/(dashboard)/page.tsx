@@ -2,7 +2,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
-import { getChapters, getUserAttempts } from "@/lib/firebase/firestore";
+import {
+  getChapters,
+  getUserAttempts,
+} from "@/lib/firebase/firestore";
 import { scoreColor, tsToDate } from "@/lib/utils/formatters";
 import type { ChapterDoc, AttemptDoc } from "@/types";
 
@@ -35,11 +38,21 @@ export default function DashboardPage() {
   const [loading,   setLoading]   = useState(true);
 
   useEffect(() => {
-    if (!profile) return;
-    Promise.all([getChapters(), getUserAttempts(profile.uid)])
-      .then(([ch, att]) => { setChapters(ch); setAttempts(att); })
-      .finally(() => setLoading(false));
-  }, [profile]);
+  if (!profile) {
+    setLoading(false);
+    return;
+  }
+
+  Promise.all([
+    getChapters(),
+    getUserAttempts(profile.uid),
+  ])
+    .then(([ch, att]) => {
+      setChapters(ch);
+      setAttempts(att);
+    })
+    .finally(() => setLoading(false));
+}, [profile]);
 
   const accuracy = profile && profile.questionsAnswered > 0
     ? Math.round((profile.correctAnswers / profile.questionsAnswered) * 100) : 0;
