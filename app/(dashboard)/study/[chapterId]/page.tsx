@@ -3,9 +3,13 @@
 import { useParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
+import { useStudyCenter } from "@/hooks/useStudyCenter";
+import { useStudyProgress } from "@/hooks/useStudyProgress";
+
 import StudyHero from "@/components/study/StudyHero";
 import StudyGrid from "@/components/study/StudyGrid";
-import { useStudyCenter } from "@/hooks/useStudyCenter";
+import AnalyticsCard from "@/components/study/AnalyticsCard";
+import MasteryCard from "@/components/study/MasteryCard";
 
 export default function StudyPage() {
   const params = useParams();
@@ -18,6 +22,7 @@ export default function StudyPage() {
     flashcards,
     questions,
   } = useStudyCenter(chapterId);
+  const studyProgress = useStudyProgress();
 
   if (loading) {
     return (
@@ -43,17 +48,33 @@ export default function StudyPage() {
 
   return (
     <div className="space-y-8">
+      {/* Hero */}
       <StudyHero
-        chapter={chapter}
-        progress={0}
-      />
+  chapter={chapter}
+  progress={studyProgress.progress}
+/>
 
+      {/* Study Resources */}
       <StudyGrid
         chapterId={chapter.id}
         videoCount={videos.length}
         flashcardCount={flashcards.length}
         questionCount={questions.length}
       />
+
+      {/* Analytics + Mastery */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <AnalyticsCard
+  solved={studyProgress.solvedQuestions}
+  accuracy={studyProgress.accuracy}
+  wrong={studyProgress.wrongQuestions}
+  streak={studyProgress.streak}
+/>
+
+        <MasteryCard
+  progress={studyProgress.progress}
+/>
+      </div>
     </div>
   );
 }
