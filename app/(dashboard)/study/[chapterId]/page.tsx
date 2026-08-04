@@ -22,7 +22,7 @@ export default function StudyPage() {
     flashcards,
     questions,
   } = useStudyCenter(chapterId);
-  const studyProgress = useStudyProgress();
+  const studyProgress = useStudyProgress(chapterId);
 
   if (loading) {
     return (

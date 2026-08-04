@@ -7,6 +7,8 @@ import {
   getUserAttempts,
   getUserFlashcardProgress,
   getUserVideoProgress,
+  getVideos,
+  getFlashcards,
 } from "@/lib/firebase/firestore";
 
 export interface StudyProgress {
@@ -23,7 +25,7 @@ export interface StudyProgress {
   progress: number;
 }
 
-export function useStudyProgress(): StudyProgress {
+export function useStudyProgress(chapterId: string) {
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -44,11 +46,19 @@ export function useStudyProgress(): StudyProgress {
       setLoading(true);
 
       try {
-        const [attempts, videos, flashcards] = await Promise.all([
-          getUserAttempts(user.uid),
-          getUserVideoProgress(user.uid),
-          getUserFlashcardProgress(user.uid),
-        ]);
+        const [
+  attempts,
+  videos,
+  flashcards,
+  chapterVideos,
+  chapterFlashcards,
+] = await Promise.all([
+  getUserAttempts(user.uid),
+  getUserVideoProgress(user.uid),
+  getUserFlashcardProgress(user.uid),
+  getVideos(chapterId),
+  getFlashcards(chapterId),
+]);
 
         const solved = attempts.reduce(
           (sum, a) => sum + (a.totalQuestions ?? 0),
@@ -60,11 +70,13 @@ export function useStudyProgress(): StudyProgress {
           0
         );
 
-        const completed = Object.values(videos).filter(
-          (v) => v.completed
-        ).length;
+        const completed = chapterVideos.filter(
+  (video) => videos[video.id]?.completed
+).length;
 
-        const reviewed = Object.keys(flashcards).length;
+const reviewed = chapterFlashcards.filter(
+  (card) => flashcards[card.id]
+).length;
 
         setSolvedQuestions(solved);
         setWrongQuestions(wrong);
@@ -76,8 +88,7 @@ export function useStudyProgress(): StudyProgress {
     }
 
     load();
-  }, [user]);
-
+  }, [user, chapterId]);
   const accuracy = useMemo(() => {
     if (solvedQuestions === 0) return 0;
 
