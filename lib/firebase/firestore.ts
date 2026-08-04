@@ -49,6 +49,21 @@ export async function getChapters(): Promise<ChapterDoc[]> {
   return s.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as ChapterDoc));
 }
 
+export async function getChapter(
+  id: string
+): Promise<ChapterDoc | null> {
+  const snapshot = await getDoc(dref("chapters", id));
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return {
+    id: snapshot.id,
+    ...(snapshot.data() as Omit<ChapterDoc, "id">),
+  };
+}
+
 export async function createChapter(data: Partial<ChapterDoc>) {
   return addDoc(col("chapters"), { ...data, questionCount: 0, flashcardCount: 0, videoCount: 0, createdAt: ts() });
 }

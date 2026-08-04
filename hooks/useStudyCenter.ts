@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import {
+  getChapter,
   getQuestions,
   getVideos,
   getFlashcards,
-  getChapters,
 } from "@/lib/firebase/firestore";
-
 import type {
   ChapterDoc,
   FlashcardDoc,
@@ -29,10 +28,7 @@ export function useStudyCenter(chapterId: string) {
       try {
         setLoading(true);
 
-        const chapters = await getChapters();
-
-        const chapter =
-          chapters.find((c) => c.id === chapterId) ?? null;
+        const chapter = await getChapter(chapterId);
 
         const [qs, vids, cards] = await Promise.all([
           getQuestions(chapterId),
