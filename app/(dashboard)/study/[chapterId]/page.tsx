@@ -3,8 +3,9 @@
 import { useParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-import { useStudyCenter } from "@/hooks/useStudyCenter";
+import StudyHero from "@/components/study/StudyHero";
 import StudyGrid from "@/components/study/StudyGrid";
+import { useStudyCenter } from "@/hooks/useStudyCenter";
 
 export default function StudyPage() {
   const params = useParams();
@@ -42,31 +43,11 @@ export default function StudyPage() {
 
   return (
     <div className="space-y-8">
-      {/* Hero */}
-      <div
-        className="rounded-3xl border border-white/10 p-8"
-        style={{
-          background: `linear-gradient(135deg, ${chapter.color}22, #0f172a)`,
-        }}
-      >
-        <div className="flex items-center gap-4">
-          <div className="text-6xl">
-            {chapter.icon}
-          </div>
+      <StudyHero
+        chapter={chapter}
+        progress={0}
+      />
 
-          <div>
-            <h1 className="text-4xl font-black text-white">
-              {chapter.name}
-            </h1>
-
-            <p className="mt-2 text-slate-300">
-              Everything you need to master this chapter.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Study Resources */}
       <StudyGrid
         chapterId={chapter.id}
         videoCount={videos.length}
