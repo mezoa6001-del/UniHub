@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   getChapters,
+  getQuestions,
   createChapter,
   updateChapter,
   deleteChapter,
@@ -61,17 +62,28 @@ export default function AdminChaptersPage() {
 );
 
   async function handleDelete(id: string, name: string) {
-    if (!confirm(`Delete "${name}"?`)) return;
+  if (!confirm(`Delete "${name}"?`)) return;
 
-    await deleteChapter(id);
+  const questions = await getQuestions(id);
 
+  if (questions.length > 0) {
     setToast({
-      msg: "Chapter deleted",
-      type: "success",
+      msg: `Cannot delete "${name}". Delete or move all questions first.`,
+      type: "error",
     });
 
-    load();
+    return;
   }
+
+  await deleteChapter(id);
+
+  setToast({
+    msg: "Chapter deleted",
+    type: "success",
+  });
+
+  load();
+}
 
   async function handleSave(form: any) {
     if (modal?.mode === "add") {

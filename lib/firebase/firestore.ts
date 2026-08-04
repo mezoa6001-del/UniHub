@@ -273,8 +273,20 @@ export async function getUserBookmarks(uid: string): Promise<BookmarkDoc[]> {
   return s.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as BookmarkDoc));
 }
 
-export async function addBookmark(uid: string, questionId: string, note = "") {
-  return addDoc(col("bookmarks"), { userId: uid, questionId, note, createdAt: ts() });
+export async function addBookmark(
+  uid: string,
+  questionId: string,
+  note = ""
+) {
+  return setDoc(
+    doc(db, "bookmarks", `${uid}_${questionId}`),
+    {
+      userId: uid,
+      questionId,
+      note,
+      createdAt: ts(),
+    }
+  );
 }
 
 export async function removeBookmark(id: string) {
@@ -337,25 +349,6 @@ export async function saveAttempt(uid: string, data: Partial<AttemptDoc>, displa
     completedAt: ts(),
   });
 
-  batch.update(dref("users", uid), {
-    questionsAnswered: inc(data.totalQuestions ?? 0),
-    correctAnswers: inc(data.correctCount ?? 0),
-    totalScore: inc(data.score ?? 0),
-    updatedAt: ts(),
-  });
-
-  batch.set(
-    dref("leaderboard", uid),
-    {
-      displayName,
-      totalScore: inc(data.score ?? 0),
-      questionsAnswered: inc(data.totalQuestions ?? 0),
-      correctAnswers: inc(data.correctCount ?? 0),
-      weeklyScore: inc(data.score ?? 0),
-      updatedAt: ts(),
-    },
-    { merge: true }
-  );
 
   await batch.commit();
 }

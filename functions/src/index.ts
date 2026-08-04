@@ -129,7 +129,7 @@ export const paymobCallback = functions.region("europe-west1").https.onRequest(a
       tx.update(paymentDoc.ref, { status: "completed", paymobTxId: txId, completedAt: FieldValue.serverTimestamp() });
     });
 
-    await auth.setCustomnserClaims(userId, {
+    await auth.setCustomUserClaims(userId, {
       role: "student", subscribed: true, subhlan: planId,
       subExpiresAt: addMonths(new Date(), plan.months).getTime(),
     });
@@ -234,7 +234,13 @@ export const dailyNotificationEngine = functions.region("europe-west1").pubsub
       .where("status", "==", "active").where("expiresAt", "<", Timestamp.fromDate(now)).get();
     for (const sub of expired.docs) {
       batch.update(sub.ref, { status: "expired", updatedAt: FieldValue.serverTimestamp() });
-      try { await auth.setCustomnserClaims(sub.data().userId, { role: "student", subscribed: false }); } catch {}
+      try { await auth.setCustomUserClaims(sub.data().userId, { role: "student", subscribed: false, subhlan: null, subExpiresAt: null }); } catch (err) { functions.logger.error("Failed to update custom claims for user", sub.data().userId, err); }
+      batch.set(db.collection("notifications").doc(), {
+        userId: sub.data().userId, type: "subscription_expired",
+        title: "⚠️ Subscription Expired",
+        body: `Your ${sub.data().planName} plan has expired. Renew now to continue enjoying nniHub!`,
+        read: false, data: { daysLeft: 0 }, createdAt: FieldValue.serverTimestamp(),
+      });
     }
     await batch.commit();
   });
@@ -243,7 +249,7 @@ export const dailyNotificationEngine = functions.region("europe-west1").pubsub
 export const setAdminRole = functions.region("europe-west1").https.onCall(async (data, context) => {
   if (context.auth?.token?.role !== "superadmin") throw new functions.https.HttpsError("permission-denied", "Superadmin required");
   const { uid } = data as { uid: string };
-  await auth.setCustomnserClaims(uid, { role: "admin", subscribed: true });
+  await auth.setCustomUserClaims(uid, { role: "admin", subscribed: true });
   await db.doc(`users/${uid}`).update({ role: "admin", updatedAt: FieldValue.serverTimestamp() });
   return { success: true, uid, role: "admin" };
 });
@@ -254,7 +260,7 @@ export const setStudentRole = functions.region("europe-west1").https.onCall(asyn
   const { uid } = data as { uid: string };
   const sub = await db.doc(`subscriptions/${uid}`).get();
   const isSubscribed = sub.exists && sub.data()!.status === "active";
-  await auth.setCustomnserClaims(uid, { role: "student", subscribed: isSubscribed });
+  await auth.setCustomUserClaims(uid, { role: "student", subscribed: isSubscribed });
   await db.doc(`users/${uid}`).update({ role: "student", updatedAt: FieldValue.serverTimestamp() });
   return { success: true, uid, role: "student" };
 });
@@ -263,7 +269,7 @@ export const setStudentRole = functions.region("europe-west1").https.onCall(asyn
 export const setSuperAdminRole = functions.region("europe-west1").https.onCall(async (data, context) => {
   if (context.auth?.token?.role !== "superadmin") throw new functions.https.HttpsError("permission-denied", "Superadmin required");
   const { uid } = data as { uid: string };
-  await auth.setCustomnserClaims(uid, { role: "superadmin", subscribed: true });
+  await auth.setCustomUserClaims(uid, { role: "superadmin", subscribed: true });
   await db.doc(`users/${uid}`).update({ role: "superadmin", updatedAt: FieldValue.serverTimestamp() });
   return { success: true, uid, role: "superadmin" };
 });

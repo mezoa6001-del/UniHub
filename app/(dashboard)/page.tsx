@@ -2,10 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  getChapters,
-  getUserAttempts,
-} from "@/lib/firebase/firestore";
+import { getChapters, getUserAttempts } from "@/lib/firebase/firestore";
 import { scoreColor, tsToDate } from "@/lib/utils/formatters";
 import type { ChapterDoc, AttemptDoc } from "@/types";
 

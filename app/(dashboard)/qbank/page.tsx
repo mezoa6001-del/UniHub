@@ -19,21 +19,8 @@ export default function QBankPage() {
   const [loading,   setLoading]   = useState(false);
 
   useEffect(() => {
-  if (!profile) {
-    setLoading(false);
-    return;
-  }
-
-  Promise.all([
-    getChapters(),
-    getUserAttempts(profile.uid),
-  ])
-    .then(([ch, att]) => {
-      setChapters(ch);
-      setAttempts(att);
-    })
-    .finally(() => setLoading(false));
-}, [profile]);
+  getChapters().then(setChapters);
+}, []);
 
   const toggle = (id: string) =>
     setSelCh((s) => s.includes(id) ? s.filter((x) => x !== id) : [...s, id]);

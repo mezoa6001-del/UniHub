@@ -57,7 +57,7 @@ export default function ExamPage() {
       finishSession();
       setResult(true);
     } finally { setSaving(false); }
-  }, [profile, session, elapsed, finishSession]);
+  }, [profile, session, elapsed, finishSession, saving]);
 
   if (!session) return null;
 
@@ -134,7 +134,9 @@ export default function ExamPage() {
     <div className="min-h-screen bg-[#0A1628]">
       {/* Header */}
       <div className="bg-navy px-5 py-3 flex items-center gap-4 border-b border-white/6">
-        <button onClick={finish} className="bg-white/10 border-none rounded-lg px-4 py-2 text-white text-sm font-semibold hover:bg-white/15">
+        <button
+  onClick={finish}
+  disabled={saving || session.completed} className="bg-white/10 border-none rounded-lg px-4 py-2 text-white text-sm font-semibold hover:bg-white/15">
           ✕ End
         </button>
         <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
