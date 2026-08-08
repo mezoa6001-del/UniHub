@@ -14,38 +14,44 @@ import {
   StatsGrid,
 } from "./components";
 
-const dashboardStats = [
+import type {
+  DashboardActivity,
+  DashboardQuickAction,
+  DashboardStat,
+} from "./types";
+
+const dashboardStats: DashboardStat[] = [
   {
     label: "Courses in progress",
     value: "4",
     description: "Continue building your knowledge",
     icon: BookOpen,
-    accent: "primary" as const,
+    accent: "primary",
   },
   {
     label: "Study time",
     value: "12h 40m",
     description: "This week",
     icon: Clock3,
-    accent: "blue" as const,
+    accent: "blue",
   },
   {
     label: "Questions completed",
     value: "248",
     description: "32 more than last week",
     icon: ClipboardCheck,
-    accent: "violet" as const,
+    accent: "violet",
   },
   {
     label: "Average score",
     value: "86%",
     description: "Keep up the great work",
     icon: Target,
-    accent: "amber" as const,
+    accent: "amber",
   },
 ];
 
-const quickActions = [
+const quickActions: DashboardQuickAction[] = [
   {
     label: "Browse courses",
     description: "Find your next topic",
@@ -66,27 +72,27 @@ const quickActions = [
   },
 ];
 
-const recentActivities = [
+const recentActivities: DashboardActivity[] = [
   {
     id: "activity-1",
     title: "Completed Pharmacokinetics quiz",
     description: "Scored 9 out of 10 questions",
     timestamp: "20 minutes ago",
-    icon: ClipboardCheck,
+    kind: "question",
   },
   {
     id: "activity-2",
     title: "Continued Cardiovascular Pharmacology",
     description: "Watched the beta blockers lesson",
     timestamp: "Yesterday",
-    icon: BookOpen,
+    kind: "course",
   },
   {
     id: "activity-3",
     title: "Reached a 5-day study streak",
     description: "Your consistency is paying off",
     timestamp: "2 days ago",
-    icon: Target,
+    kind: "question",
   },
 ];
 

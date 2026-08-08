@@ -1,4 +1,9 @@
-import type { LucideIcon } from "lucide-react";
+import {
+  BookOpen,
+  FolderOpen,
+  PlayCircle,
+  CircleHelp,
+} from "lucide-react";
 
 import { Card } from "@/components/ui";
 import type { DashboardActivity } from "../types";
@@ -26,9 +31,14 @@ export function RecentActivity({ activities }: RecentActivityProps) {
     </section>
   );
 }
-
+const activityIcons = {
+  course: BookOpen,
+  chapter: FolderOpen,
+  video: PlayCircle,
+  question: CircleHelp,
+} as const;
 function ActivityItem({ activity }: { activity: DashboardActivity }) {
-  const Icon: LucideIcon = activity.icon;
+  const Icon = activityIcons[activity.kind];
 
   return (
     <li className="flex gap-3 py-4 first:pt-0 last:pb-0">
