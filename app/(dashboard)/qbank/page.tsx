@@ -77,11 +77,12 @@ const selected = shuffled.slice(
                   <button key={ch.id} onClick={() => toggle(ch.id)}
                     className="p-3 rounded-xl text-left transition-all border-2"
                     style={{
-                      borderColor: on ? (ch.color ?? "#2FA084") : "rgba(255,255,255,0.08)",
-                      background:  on ? (ch.color ?? "#2FA084") + "18" : "transparent",
+                      borderColor: on ? "#2FA084" : "rgba(255,255,255,0.08)",
+
+background: on ? "#2FA08418" : "transparent",
                     }}>
-                    <div className="text-2xl mb-1">{ch.icon}</div>
-                    <div className="text-[13px] font-semibold" style={{ color: on ? (ch.color ?? "#2FA084") : "white" }}>{ch.name}</div>
+                    <div className="text-2xl mb-1">📚</div>
+                    <div className="text-[13px] font-semibold" style={{ color: on ? ("#2FA084") : "white" }}>{ch.title}</div>
                     <div className="text-[11px] text-slate-400">{ch.questionCount ?? 0} questions</div>
                   </button>
                 );

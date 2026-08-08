@@ -5,4 +5,4 @@ import { createVideoSchema } from "./create-video.schema";
 export const updateVideoSchema = createVideoSchema;
 
 export type UpdateVideoInput =
-  z.infer<typeof updateVideoSchema>;
+  z.input<typeof updateVideoSchema>;

@@ -82,7 +82,7 @@ export function useQuestionManager() {
 
     const payload = {
   ...form,
-  chapterName: chapter?.name ?? form.chapterId,
+  chapterName: chapter?.title ?? form.chapterId,
   type: "single" as const,
 
   ...(form.source ? { source: form.source } : {}),

@@ -16,14 +16,14 @@ export default function StudyHero({
     <section
       className="relative overflow-hidden rounded-3xl border border-white/10 p-8"
       style={{
-        background: `linear-gradient(135deg, ${chapter.color}22 0%, #0f172a 100%)`,
+        background: `linear-gradient(135deg, #2FA08422 0%, #0f172a 100%)`,
       }}
     >
       {/* Background Glow */}
       <div
         className="absolute -right-20 -top-20 h-64 w-64 rounded-full blur-3xl opacity-30"
         style={{
-          background: chapter.color,
+          background: "#2FA084"
         }}
       />
 
@@ -33,10 +33,10 @@ export default function StudyHero({
             <div
               className="flex h-20 w-20 items-center justify-center rounded-3xl text-5xl"
               style={{
-                backgroundColor: `${chapter.color}20`,
+                backgroundColor: `#2FA08420`,
               }}
             >
-              {chapter.icon}
+              📚
             </div>
 
             <div>
@@ -45,7 +45,7 @@ export default function StudyHero({
               </p>
 
               <h1 className="mt-2 text-4xl font-black text-white">
-                {chapter.name}
+                {chapter.title}
               </h1>
 
               <p className="mt-2 max-w-xl text-slate-300">
@@ -79,7 +79,7 @@ export default function StudyHero({
               className="h-full rounded-full transition-all duration-700"
               style={{
                 width: `${progress}%`,
-                background: chapter.color,
+                background: "#2FA084",
               }}
             />
           </div>

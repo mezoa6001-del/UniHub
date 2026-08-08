@@ -62,7 +62,7 @@ export default function FlashcardsPage() {
         <select value={selCh} onChange={(e) => setSelCh(e.target.value)}
           className="px-4 py-2 rounded-xl bg-navy-card border border-white/8 text-white text-sm outline-none">
           <option value="all">All Chapters</option>
-          {chapters.map((ch) => <option key={ch.id} value={ch.id}>{ch.name}</option>)}
+          {chapters.map((ch) => <option key={ch.id} value={ch.id}>{ch.title}</option>)}
         </select>
         <span className="ml-auto text-sm text-slate-400">
           {cards.length} cards · {Object.keys(progress).length} reviewed
@@ -124,7 +124,7 @@ export default function FlashcardsPage() {
               return (
                 <div key={fc.id} className="bg-navy-card rounded-2xl p-5 border border-white/8">
                   <div className="flex justify-between items-start mb-3">
-                    <Badge color="#2FA084">{chapters.find((c) => c.id === fc.chapterId)?.name ?? fc.chapterId}</Badge>
+                    <Badge color="#2FA084">{chapters.find((c) => c.id === fc.chapterId)?.title ?? fc.chapterId}</Badge>
                     {p && <Badge color={col}>{p.difficulty}</Badge>}
                   </div>
                   <p className="text-sm font-semibold text-white mb-2 leading-relaxed">{fc.front}</p>

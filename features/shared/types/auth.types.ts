@@ -1,4 +1,6 @@
+import type { UserRole } from "@/types";
+
 export interface CurrentUser {
   uid: string;
-  role: "owner" | "instructor" | "student";
+  role: UserRole;
 }

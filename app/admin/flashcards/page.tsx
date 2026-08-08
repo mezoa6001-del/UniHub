@@ -46,7 +46,7 @@ export default function AdminFlashcardsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {fcs.map((fc) => (
             <div key={fc.id} className="bg-navy-card rounded-2xl p-5 border border-white/8">
-              <Badge color="#2FA084">{chs.find((c) => c.id === fc.chapterId)?.name ?? fc.chapterId}</Badge>
+              <Badge color="#2FA084">{chs.find((c) => c.id === fc.chapterId)?.title ?? fc.chapterId}</Badge>
               <p className="text-sm font-semibold text-white mt-3 mb-2 leading-relaxed">{fc.front}</p>
               <p className="text-xs text-slate-400 mb-4 leading-relaxed whitespace-pre-line">{fc.back}</p>
               <div className="flex gap-2">
@@ -73,7 +73,7 @@ export default function AdminFlashcardsPage() {
                 <select value={modal.data.chapterId} onChange={(e) => setModal((m) => m && ({ ...m, data: { ...m.data, chapterId: e.target.value } }))}
                   className="w-full px-3 py-2.5 rounded-lg bg-white/5 border border-white/8 text-white text-sm outline-none">
                   <option value="">Select chapter</option>
-                  {chs.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  {chs.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
                 </select>
               </div>
               <div>

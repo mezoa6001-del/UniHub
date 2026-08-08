@@ -34,7 +34,7 @@ export function EditCourseDialog({
 
   const currentUser: CurrentUser = {
   uid: user?.uid ?? "",
-  role: "owner",
+  role: "admin",
 };
 
   

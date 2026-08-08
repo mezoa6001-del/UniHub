@@ -51,19 +51,41 @@ export interface UserDoc {
   updatedAt: FsTs;
 }
 
+export interface CourseDoc {
+  id: string;
+  title: string;
+  description: string;
+  slug: string;
+  thumbnailUrl: string;
+  status: "draft" | "published";
+  instructorIds: string[];
+  ownerId: string;
+  createdAt: FsTs;
+  updatedAt?: FsTs;
+  deletedAt?: FsTs;
+}
+
 export interface ChapterDoc {
-  id:             string;
-  name:           string;
-  icon:           string;
-  description:    string;
-  order:          number;
-  color:          string;
-  questionCount:  number;
+  id: string;
+
+  courseId: string;
+
+  title: string;
+
+  slug: string;
+
+  description: string;
+
+  order: number;
+
+  status: "draft" | "published";
+
+  questionCount: number;
   flashcardCount: number;
-  videoCount:     number;
-  isPublished:    boolean;
-  createdAt:      FsTs;
-  updatedAt?:     FsTs;
+  videoCount: number;
+
+  createdAt: FsTs;
+  updatedAt?: FsTs;
 }
 
 export interface QuestionOption { id: string; text: string; }
@@ -122,8 +144,9 @@ export interface FlashcardProgressDoc {
 
 export interface VideoDoc {
   id:            string;
+  courseId:      string;
   chapterId:     string;
-  chapterName: string;
+  chapterName:   string;
   title:         string;
   description:   string;
   instructorName: string;
@@ -152,7 +175,35 @@ export interface VideoProgressDoc {
   completed:      boolean;
   lastWatchedAt:  FsTs;
 }
+export interface StudyProgressDoc {
+  id: string;
 
+  userId: string;
+
+  courseId: string;
+
+  chapterId: string;
+
+  completedVideos: number;
+  totalVideos: number;
+
+  completedQuestions: number;
+  totalQuestions: number;
+
+  masteredFlashcards: number;
+  totalFlashcards: number;
+
+  overallProgress: number;
+
+  currentVideoId?: string;
+  currentQuestionId?: string;
+  currentFlashcardId?: string;
+
+  lastActivityAt: FsTs;
+
+  createdAt: FsTs;
+  updatedAt: FsTs;
+}
 export interface SubscriptionDoc {
   userId:        string;
   planId:        PlanId;

@@ -25,7 +25,11 @@ export function QuestionForm({ initial, chapters, onSave, onCancel }: Props) {
         <select value={form.chapterId} onChange={(e) => set("chapterId", e.target.value)}
           className="w-full px-3 py-2.5 rounded-lg bg-white/5 border border-white/8 text-white text-sm outline-none">
           <option value="">Select chapter</option>
-          {chapters.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          {chapters.map((c) => (
+  <option key={c.id} value={c.id}>
+    {c.title}
+  </option>
+))}
         </select>
       </div>
       <div>

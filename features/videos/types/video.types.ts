@@ -40,8 +40,11 @@ export interface CreateVideoData {
   courseId: string;
   chapterId: string;
 
-  provider: VideoProvider;
-  videoUrl: string;
+  provider: "bunny";
+
+  libraryId: string;
+
+  videoId: string;
 
   thumbnailUrl?: string;
 

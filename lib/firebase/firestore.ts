@@ -5,20 +5,19 @@ import {
   Timestamp, writeBatch, startAfter, QueryDocumentSnapshot,
   type DocumentData,
 } from "firebase/firestore";
-import { db } from "./config";
 import type {
-  UserDoc, ChapterDoc, QuestionDoc, FlashcardDoc,
+  UserDoc,CourseDoc, ChapterDoc, QuestionDoc, FlashcardDoc,
   FlashcardProgressDoc, VideoDoc, VideoProgressDoc,
   SubscriptionDoc, AttemptDoc, BookmarkDoc, WrongQuestionDoc,
-  LeaderboardEntry, NotificationDoc,
+  LeaderboardEntry, NotificationDoc,StudyProgressDoc
 } from "@/types";
-
-//  Helpers 
-const col  = (name: string) => collection(db, name);
-const dref = (path: string, id: string) => doc(db, path, id);
-const ts   = () => serverTimestamp();
-const inc  = (n: number) => increment(n);
-
+import {
+  db,
+  col,
+  dref,
+  ts,
+  inc,
+} from "./helpers";
 //  Users 
 export async function createUserProfile(uid: string, data: Partial<UserDoc>) {
   await setDoc(dref("users", uid), {
@@ -48,7 +47,26 @@ export async function getChapters(): Promise<ChapterDoc[]> {
   const s = await getDocs(query(col("chapters"), orderBy("order", "asc")));
   return s.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as ChapterDoc));
 }
+export async function getChaptersByCourse(
+  courseId: string
+): Promise<ChapterDoc[]> {
+  const snapshot = await getDocs(
+    query(
+      col("chapters"),
+      where("courseId", "==", courseId),
+      where("status", "==", "published"),
+      orderBy("order", "asc")
+    )
+  );
 
+  return snapshot.docs.map(
+    (doc) =>
+      ({
+        id: doc.id,
+        ...(doc.data() as Omit<ChapterDoc, "id">),
+      }) as ChapterDoc
+  );
+}
 export async function getChapter(
   id: string
 ): Promise<ChapterDoc | null> {
@@ -75,7 +93,34 @@ export async function updateChapter(id: string, data: Partial<ChapterDoc>) {
 export async function deleteChapter(id: string) {
   await deleteDoc(dref("chapters", id));
 }
+// Courses
+export async function getCourses(): Promise<CourseDoc[]> {
+  const snapshot = await getDocs(
+    query(col("courses"), orderBy("createdAt", "asc"))
+  );
 
+  return snapshot.docs.map(
+    (doc) =>
+      ({
+        id: doc.id,
+        ...(doc.data() as Omit<CourseDoc, "id">),
+      }) as CourseDoc
+  );
+}
+export async function getCourseById(
+  id: string
+): Promise<CourseDoc | null> {
+  const snapshot = await getDoc(dref("courses", id));
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return {
+    id: snapshot.id,
+    ...(snapshot.data() as Omit<CourseDoc, "id">),
+  };
+}
 //  Questions 
 export async function getQuestions(chapterId?: string): Promise<QuestionDoc[]> {
   let q = query(col("questions"), where("isActive", "==", true));
@@ -209,7 +254,7 @@ export async function getVideos(
       ? query(
           col("videos"),
           where("chapterId", "==", chapterId),
-          ...(includeDrafts ? [] : [where("isPublished", "==", true)]),
+          ...(includeDrafts ? [] : [where("status", "==", "published")]),
           orderBy("order", "asc")
         )
       : query(
@@ -227,6 +272,20 @@ export async function getVideos(
         ...d.data(),
       }) as VideoDoc
   );
+}
+export async function getVideoById(
+  id: string
+): Promise<VideoDoc | null> {
+  const snapshot = await getDoc(dref("videos", id));
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return {
+    id: snapshot.id,
+    ...(snapshot.data() as Omit<VideoDoc, "id">),
+  };
 }
 
 export async function createVideo(data: Partial<VideoDoc>) {
@@ -421,4 +480,44 @@ export async function listAllUsers(pageSize = 50, lastDoc?: QueryDocumentSnapsho
   if (lastDoc) q = query(q, startAfter(lastDoc));
   const s = await getDocs(q);
   return { users: s.docs.map((d) => ({ id: d.id, ...d.data() })), lastDoc: s.docs[s.docs.length - 1] ?? null };
+}
+// ─────────────────────────────────────────────
+// Study Progress
+// ─────────────────────────────────────────────
+
+export async function getStudyProgress(
+  userId: string,
+  chapterId: string
+): Promise<StudyProgressDoc | null> {
+  const q = query(
+    col("study_progress"),
+    where("userId", "==", userId),
+    where("chapterId", "==", chapterId),
+    limit(1)
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) return null;
+
+  const doc = snap.docs[0];
+
+  return {
+    id: doc.id,
+    ...(doc.data() as Omit<StudyProgressDoc, "id">),
+  };
+}
+export async function upsertStudyProgress(
+  data: StudyProgressDoc
+) {
+  await setDoc(
+    dref("study_progress", data.id),
+    {
+      ...data,
+      updatedAt: ts(),
+    },
+    {
+      merge: true,
+    }
+  );
 }

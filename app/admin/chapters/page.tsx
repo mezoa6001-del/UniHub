@@ -17,7 +17,7 @@ import {
 import type { ChapterDoc } from "@/types";
 
 const BLANK = {
-  name: "",
+  title: "",
   icon: "📖",
   color: "#2FA084",
   description: "",
@@ -56,7 +56,7 @@ export default function AdminChaptersPage() {
   }, []);
 
   const filtered = chapters.filter((chapter) =>
-  (chapter.name ?? "")
+  (chapter.title ?? "")
     .toLowerCase()
     .includes(search.toLowerCase())
 );
@@ -158,11 +158,11 @@ export default function AdminChaptersPage() {
               className="bg-navy-card rounded-2xl p-5 border border-white/8"
             >
               <div className="text-4xl mb-3">
-                {chapter.icon}
+                📚
               </div>
 
               <h3 className="font-bold text-white text-sm mb-1">
-                {chapter.name}
+                {chapter.title}
               </h3>
 
               <p className="text-xs text-slate-400 mb-4">
@@ -177,7 +177,7 @@ export default function AdminChaptersPage() {
                 <div
                   className="h-full rounded-full w-2/5"
                   style={{
-                    background: chapter.color,
+                    background: "#2FA084",
                   }}
                 />
               </div>
@@ -198,7 +198,7 @@ export default function AdminChaptersPage() {
 
                 <button
                   onClick={() =>
-                    handleDelete(chapter.id, chapter.name)
+                    handleDelete(chapter.id, chapter.title)
                   }
                   className="px-3 py-2 rounded-lg text-xs font-bold text-red-400 border border-red-500/30"
                 >

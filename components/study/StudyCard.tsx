@@ -2,59 +2,70 @@
 
 import Link from "next/link";
 
-type Props = {
+type StudyCardProps = {
   title: string;
-  subtitle: string;
+  description: string;
+  icon: React.ReactNode;
   count: number;
-  icon: string;
+  unit: string;
   href: string;
-  color: string;
+  accentColor?: string;
 };
 
 export default function StudyCard({
   title,
-  subtitle,
-  count,
+  description,
   icon,
+  count,
+  unit,
   href,
-  color,
-}: Props) {
+  accentColor = "#2FA084",
+}: StudyCardProps) {
   return (
     <Link
       href={href}
-      className="group block rounded-3xl border border-white/10 bg-navy-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary-500/40 hover:shadow-xl hover:shadow-primary-500/10"
+      className="group block rounded-3xl border border-white/10 bg-[#111C33] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary-500 hover:shadow-xl"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div
-          className="flex h-14 w-14 items-center justify-center rounded-2xl text-3xl"
-          style={{ backgroundColor: `${color}20` }}
+          className="flex h-14 w-14 items-center justify-center rounded-2xl text-2xl"
+          style={{
+            backgroundColor: `${accentColor}20`,
+            color: accentColor,
+          }}
         >
           {icon}
         </div>
 
-        <span className="text-2xl transition-transform group-hover:translate-x-1">
-          →
+        <span className="text-sm font-semibold text-primary-400 opacity-0 transition-opacity group-hover:opacity-100">
+          Open →
         </span>
       </div>
 
-      <h3 className="mt-5 text-xl font-bold text-white">
-        {title}
-      </h3>
+      <div className="mt-6">
+        <h3 className="text-xl font-bold text-white">
+          {title}
+        </h3>
 
-      <p className="mt-1 text-sm text-slate-400">
-        {subtitle}
-      </p>
-
-      <div className="mt-6 text-3xl font-black text-white">
-        {count}
+        <p className="mt-2 text-sm leading-6 text-slate-400">
+          {description}
+        </p>
       </div>
 
-      <div className="text-xs uppercase tracking-wider text-slate-500">
-        Available
-      </div>
+      <div className="mt-8 flex items-end justify-between">
+        <div>
+          <div className="text-3xl font-black text-white">
+            {count}
+          </div>
 
-      <div className="mt-6 rounded-xl bg-primary-500/10 py-3 text-center font-semibold text-primary-300 transition-colors group-hover:bg-primary-500 group-hover:text-white">
-        Open →
+          <div className="text-sm text-slate-400">
+            {unit}
+          </div>
+        </div>
+
+        <div className="text-primary-400 transition-transform group-hover:translate-x-1">
+          →
+        </div>
       </div>
     </Link>
   );

@@ -54,6 +54,8 @@ durationSeconds: z
 
   isFreePreview: z.boolean(),
 });
-
 export type CreateVideoInput =
   z.input<typeof createVideoSchema>;
+
+export type CreateVideoData =
+  z.infer<typeof createVideoSchema>;

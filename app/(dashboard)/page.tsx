@@ -129,11 +129,13 @@ export default function DashboardPage() {
             {chapters.map((ch) => (
               <div key={ch.id}>
                 <div className="flex justify-between items-center mb-1.5">
-                  <span className="text-sm text-white font-medium">{ch.icon} {ch.name}</span>
+                  <span className="text-sm text-white font-medium">{ch.title}</span>
                   <span className="text-xs text-slate-400">{ch.questionCount ?? 0} Qs</span>
                 </div>
                 <div className="h-1.5 bg-white/8 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full w-2/5" style={{ background: ch.color ?? "#2FA084" }} />
+                  <div className="h-full rounded-full w-2/5" style={{
+  background: "#2FA084",
+}} />
                 </div>
               </div>
             ))}

@@ -38,7 +38,7 @@ export function CourseForm() {
 
   const currentUser: CurrentUser = {
     uid: user.uid,
-    role: "owner",
+    role: "admin",
   };
 
   return <CourseFormContent currentUser={currentUser} />;
