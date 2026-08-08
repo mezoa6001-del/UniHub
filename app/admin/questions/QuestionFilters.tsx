@@ -47,7 +47,7 @@ export default function QuestionFilters({
           <option value="">All chapters</option>
           {chapters.map((chapter) => (
             <option key={chapter.id} value={chapter.id}>
-              {chapter.name}
+              {chapter.title}
             </option>
           ))}
         </select>

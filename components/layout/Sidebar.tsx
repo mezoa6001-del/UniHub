@@ -9,13 +9,7 @@ import { cn } from "@/lib/utils/cn";
 const NAV_ITEMS = [
   { href: "/",                icon: "🏠", label: "Dashboard"       },
 
-  { href: "/courses",         icon: "📚", label: "Courses" },
-
-  { href: "/qbank",           icon: "📝", label: "Question Bank"   },
-
-  { href: "/flashcards",      icon: "⚡", label: "Flashcards"      },
-
-  { href: "/videos",          icon: "🎥", label: "Videos"          },
+  { href: "/courses",         icon: "📚", label: "Study" },
 
   { href: "/analytics",       icon: "📊", label: "Analytics"       },
 

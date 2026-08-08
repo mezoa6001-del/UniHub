@@ -19,6 +19,7 @@ import { ConfirmDialog } from "@/components/ui";
 import { deleteChapter } from "@/features/chapters/services";
 
 import type { Chapter } from "@/features/chapters/types";
+import CourseVideosTab from "./CourseVideosTab";
 interface CourseDetailsPageProps {
   courseId: string;
 }
@@ -193,12 +194,10 @@ const [deleteLoading, setDeleteLoading] =
         )}
 
         {activeTab === "videos" && (
-          <Card>
-            <h2 className="text-xl font-semibold text-white">
-              Videos
-            </h2>
-          </Card>
-        )}
+  <CourseVideosTab
+    courseId={course.id}
+  />
+)}
 
         {activeTab === "questions" && (
           <Card>

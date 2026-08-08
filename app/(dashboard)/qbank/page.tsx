@@ -18,7 +18,9 @@ export default function QBankPage() {
   const [filter,    setFilter]    = useState<"all"|"bookmarked"|"incorrect">("all");
   const [loading,   setLoading]   = useState(false);
 
-  useEffect(() => { getChapters().then(setChapters); }, []);
+  useEffect(() => {
+  getChapters().then(setChapters);
+}, []);
 
   const toggle = (id: string) =>
     setSelCh((s) => s.includes(id) ? s.filter((x) => x !== id) : [...s, id]);
@@ -40,9 +42,18 @@ export default function QBankPage() {
         qs = qs.filter((q) => ids.has(q.id));
       }
 
-      if (!qs.length) { alert("No questions match your filters. Try adjusting your selection."); return; }
+      if (!qs.length) {
+  alert("No questions match your filters. Try adjusting your selection.");
+  setLoading(false);
+  return;
+}
 
-      const selected = qs.sort(() => Math.random() - 0.5).slice(0, Math.min(numQ, qs.length));
+      const shuffled = [...qs].sort(() => Math.random() - 0.5);
+
+const selected = shuffled.slice(
+  0,
+  Math.min(numQ, shuffled.length)
+);
       startSession(selected, mode, mode === "timed");
       router.push("/qbank/exam");
     } finally { setLoading(false); }
@@ -66,11 +77,12 @@ export default function QBankPage() {
                   <button key={ch.id} onClick={() => toggle(ch.id)}
                     className="p-3 rounded-xl text-left transition-all border-2"
                     style={{
-                      borderColor: on ? (ch.color ?? "#2FA084") : "rgba(255,255,255,0.08)",
-                      background:  on ? (ch.color ?? "#2FA084") + "18" : "transparent",
+                      borderColor: on ? "#2FA084" : "rgba(255,255,255,0.08)",
+
+background: on ? "#2FA08418" : "transparent",
                     }}>
-                    <div className="text-2xl mb-1">{ch.icon}</div>
-                    <div className="text-[13px] font-semibold" style={{ color: on ? (ch.color ?? "#2FA084") : "white" }}>{ch.name}</div>
+                    <div className="text-2xl mb-1">📚</div>
+                    <div className="text-[13px] font-semibold" style={{ color: on ? ("#2FA084") : "white" }}>{ch.title}</div>
                     <div className="text-[11px] text-slate-400">{ch.questionCount ?? 0} questions</div>
                   </button>
                 );

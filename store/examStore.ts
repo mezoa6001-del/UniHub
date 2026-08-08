@@ -32,7 +32,9 @@ export const useExamStore = create<ExamStore>()(
       startSession: (questions, mode, timed = false) =>
         set({
           session: {
-            sessionId:    crypto.randomUUID(),
+            sessionId:
+  globalThis.crypto?.randomUUID?.() ??
+  `${Date.now()}-${Math.random().toString(36).slice(2)}`,
             questions,
             mode,
             currentIndex: 0,
@@ -65,9 +67,19 @@ export const useExamStore = create<ExamStore>()(
         })),
 
       jumpTo: (index) =>
-        set((state) => ({
-          session: state.session ? { ...state.session, currentIndex: index } : null,
-        })),
+  set((state) => {
+    if (!state.session) return { session: null };
+
+    return {
+      session: {
+        ...state.session,
+        currentIndex: Math.max(
+          0,
+          Math.min(index, state.session.questions.length - 1)
+        ),
+      },
+    };
+  }),
 
       finishSession: () =>
         set((state) => ({
@@ -77,7 +89,7 @@ export const useExamStore = create<ExamStore>()(
       clearSession: () => set({ session: null }),
     }),
     {
-      name:    "pharmacore-exam-session",
+      name: "unihub-exam-session",
       storage: createJSONStorage(() => sessionStorage),
     }
   )

@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import type { CurrentUser } from "@/features/shared/types/auth.types";
+import { useAuth } from "@/hooks/useAuth";
 
 import { createVideo } from "../services/create-video.service";
 import type { CreateVideoInput } from "../schemas/create-video.schema";
 
-export function useCreateVideo(currentUser: CurrentUser) {
+export function useCreateVideo() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const router = useRouter();
+  const { user, profile } = useAuth();
 
   async function submit(data: CreateVideoInput) {
     setIsLoading(true);
@@ -21,10 +21,16 @@ export function useCreateVideo(currentUser: CurrentUser) {
     try {
       console.group("🎥 Create Video");
 
-      console.log("Current User:", currentUser);
+      console.log("Current User:", user);
       console.log("Form Data:", data);
-
-      const video = await createVideo(data, currentUser);
+if (!user || !profile) {
+  throw new Error("User is not authenticated.");
+}
+const currentUser = {
+  uid: user.uid,
+  role: profile.role,
+};
+const video = await createVideo(data, currentUser);
 
       console.log("Firestore Result:", video);
 

@@ -25,7 +25,7 @@ export function DeleteCourseDialog({
 
   const currentUser: CurrentUser = {
     uid: user?.uid ?? "",
-    role: "owner",
+    role: "admin",
   };
 
   const { submit, loading } =

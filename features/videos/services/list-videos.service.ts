@@ -11,14 +11,15 @@ import { db } from "@/lib/firebase/config";
 import { VIDEOS_COLLECTION } from "../constants";
 import type { Video } from "../types/video.types";
 
-export async function listVideos(): Promise<
-  Video[]
-> {
+export async function listVideos(
+  courseId?: string
+): Promise<Video[]> {
   const q = query(
-    collection(db, VIDEOS_COLLECTION),
-    where("deletedAt", "==", null),
-    orderBy("order", "asc")
-  );
+  collection(db, VIDEOS_COLLECTION),
+  where("deletedAt", "==", null),
+  ...(courseId ? [where("courseId", "==", courseId)] : []),
+  orderBy("order", "asc")
+);
 
   const snapshot = await getDocs(q);
 

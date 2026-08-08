@@ -82,7 +82,11 @@ export default function VideosPage() {
         <select value={selCh} onChange={(e) => setSelCh(e.target.value)}
           className="px-4 py-2 rounded-xl bg-navy-card border border-white/8 text-white text-sm outline-none">
           <option value="all">All Chapters</option>
-          {chapters.map((ch) => <option key={ch.id} value={ch.id}>{ch.name}</option>)}
+          {chapters.map((ch) => (
+  <option key={ch.id} value={ch.id}>
+    {ch.title}
+  </option>
+))}
         </select>
         <span className="ml-auto text-sm text-slate-400">{videos.length} videos</span>
       </div>

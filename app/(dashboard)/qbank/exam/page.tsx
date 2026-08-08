@@ -12,7 +12,6 @@ export default function ExamPage() {
   const router   = useRouter();
   const { profile } = useAuth();
   const { session, submitAnswer, nextQuestion, prevQuestion, finishSession, clearSession } = useExamStore();
-
   const [elapsed,   setElapsed]   = useState(0);
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [saving,    setSaving]    = useState(false);
@@ -23,10 +22,14 @@ export default function ExamPage() {
 
   // Timer
   useEffect(() => {
-    const t = setInterval(() => setElapsed((e) => e + 1), 1000);
-    return () => clearInterval(t);
-  }, []);
+  if (showResult) return;
 
+  const t = setInterval(() => {
+    setElapsed((e) => e + 1);
+  }, 1000);
+
+  return () => clearInterval(t);
+}, [showResult]);
   // Load bookmarks
   useEffect(() => {
     if (!profile) return;
@@ -35,12 +38,16 @@ export default function ExamPage() {
 
   const finish = useCallback(async () => {
     if (!profile || !session) return;
+    if (session.completed || saving) return;
     setSaving(true);
     try {
       const total   = session.questions.length;
       const correct = Object.values(session.answers).filter((a) => a.correct).length;
       const wrong   = total - correct;
-      const score   = Math.round((correct / total) * 100);
+      const score =
+  total > 0
+    ? Math.round((correct / total) * 100)
+    : 0;
       await saveAttempt(profile.uid, {
         mode: session.mode, chapterIds: [...new Set(session.questions.map((q) => q.chapterId))],
         questionIds: session.questions.map((q) => q.id), answers: session.answers,
@@ -50,7 +57,7 @@ export default function ExamPage() {
       finishSession();
       setResult(true);
     } finally { setSaving(false); }
-  }, [profile, session, elapsed, finishSession]);
+  }, [profile, session, elapsed, finishSession, saving]);
 
   if (!session) return null;
 
@@ -62,7 +69,10 @@ export default function ExamPage() {
   if (showResult) {
     const total   = session.questions.length;
     const correct = Object.values(session.answers).filter((a) => a.correct).length;
-    const score   = Math.round((correct / total) * 100);
+    const score =
+  total > 0
+    ? Math.round((correct / total) * 100)
+    : 0;
     const col     = scoreColor(score);
     return (
       <div className="max-w-xl mx-auto py-12 px-4 text-center">
@@ -101,18 +111,32 @@ export default function ExamPage() {
   };
 
   const toggleBm = async () => {
-    if (!profile) return;
-    const bms = await getUserBookmarks(profile.uid);
-    const ex  = bms.find((b) => b.questionId === q.id);
-    if (ex) { await removeBookmark(ex.id); setBookmarks((s) => { const n = new Set(s); n.delete(q.id); return n; }); }
-    else    { await addBookmark(profile.uid, q.id); setBookmarks((s) => new Set([...s, q.id])); }
-  };
+  if (!profile) return;
+
+  if (bookmarks.has(q.id)) {
+    await removeBookmark(`${profile.uid}_${q.id}`);
+
+    setBookmarks((s) => {
+      const n = new Set(s);
+      n.delete(q.id);
+      return n;
+    });
+
+    return;
+  }
+
+  await addBookmark(profile.uid, q.id);
+
+  setBookmarks((s) => new Set([...s, q.id]));
+};
 
   return (
     <div className="min-h-screen bg-[#0A1628]">
       {/* Header */}
       <div className="bg-navy px-5 py-3 flex items-center gap-4 border-b border-white/6">
-        <button onClick={finish} className="bg-white/10 border-none rounded-lg px-4 py-2 text-white text-sm font-semibold hover:bg-white/15">
+        <button
+  onClick={finish}
+  disabled={saving || session.completed} className="bg-white/10 border-none rounded-lg px-4 py-2 text-white text-sm font-semibold hover:bg-white/15">
           ✕ End
         </button>
         <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
@@ -208,7 +232,9 @@ export default function ExamPage() {
               Next →
             </button>
           ) : (
-            <button onClick={finish} disabled={saving}
+            <button
+  onClick={finish}
+  disabled={saving || session.completed}
               className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-secondary text-white font-bold text-sm disabled:opacity-60">
               {saving ? "Saving…" : "Finish Exam 🎉"}
             </button>
